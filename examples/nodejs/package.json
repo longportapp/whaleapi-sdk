@@ -1,0 +1,13 @@
+{
+  "name": "whale-nodejs-demo",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "whale": "node whale.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "longportwhale": "^1.0.0",
+    "pino": "^9.0.0"
+  }
+}

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use longport::httpclient::{HttpClient as LbHttpClient, HttpClientConfig, Json, Method};
+use longportwhale::httpclient::{HttpClient as LbHttpClient, HttpClientConfig, Json, Method};
 use napi::{Error, Result};
 use serde_json::Value;
 

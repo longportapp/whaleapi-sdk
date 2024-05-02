@@ -1,15 +1,15 @@
 {
-  "name": "longport-linux-x64-gnu",
-  "version": "0.0.0",
+  "name": "longportwhale-linux-x64-gnu",
+  "version": "1.0.0",
   "os": [
     "linux"
   ],
   "cpu": [
     "x64"
   ],
-  "main": "longport.linux-x64-gnu.node",
+  "main": "longportwhale.linux-x64-gnu.node",
   "files": [
-    "longport.linux-x64-gnu.node"
+    "longportwhale.linux-x64-gnu.node"
   ],
   "license": "MIT",
   "engines": {

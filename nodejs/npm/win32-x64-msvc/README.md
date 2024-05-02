@@ -1,3 +1,3 @@
-# `longport-win32-x64-msvc`
+# `longportwhale-win32-x64-msvc`
 
-This is the **x86_64-pc-windows-msvc** binary for `longport`
+This is the **x86_64-pc-windows-msvc** binary for `longportwhale`

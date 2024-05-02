@@ -1,15 +1,15 @@
 {
-  "name": "longport-darwin-x64",
-  "version": "0.0.0",
+  "name": "longportwhale-darwin-x64",
+  "version": "1.0.0",
   "os": [
     "darwin"
   ],
   "cpu": [
     "x64"
   ],
-  "main": "longport.darwin-x64.node",
+  "main": "longportwhale.darwin-x64.node",
   "files": [
-    "longport.darwin-x64.node"
+    "longportwhale.darwin-x64.node"
   ],
   "license": "MIT",
   "engines": {

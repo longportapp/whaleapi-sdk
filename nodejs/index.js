@@ -32,24 +32,24 @@ switch (platform) {
   case 'android':
     switch (arch) {
       case 'arm64':
-        localFileExisted = existsSync(join(__dirname, 'longport.android-arm64.node'))
+        localFileExisted = existsSync(join(__dirname, 'longportwhale.android-arm64.node'))
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.android-arm64.node')
+            nativeBinding = require('./longportwhale.android-arm64.node')
           } else {
-            nativeBinding = require('longport-android-arm64')
+            nativeBinding = require('longportwhale-android-arm64')
           }
         } catch (e) {
           loadError = e
         }
         break
       case 'arm':
-        localFileExisted = existsSync(join(__dirname, 'longport.android-arm-eabi.node'))
+        localFileExisted = existsSync(join(__dirname, 'longportwhale.android-arm-eabi.node'))
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.android-arm-eabi.node')
+            nativeBinding = require('./longportwhale.android-arm-eabi.node')
           } else {
-            nativeBinding = require('longport-android-arm-eabi')
+            nativeBinding = require('longportwhale-android-arm-eabi')
           }
         } catch (e) {
           loadError = e
@@ -63,13 +63,13 @@ switch (platform) {
     switch (arch) {
       case 'x64':
         localFileExisted = existsSync(
-          join(__dirname, 'longport.win32-x64-msvc.node')
+          join(__dirname, 'longportwhale.win32-x64-msvc.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.win32-x64-msvc.node')
+            nativeBinding = require('./longportwhale.win32-x64-msvc.node')
           } else {
-            nativeBinding = require('longport-win32-x64-msvc')
+            nativeBinding = require('longportwhale-win32-x64-msvc')
           }
         } catch (e) {
           loadError = e
@@ -77,13 +77,13 @@ switch (platform) {
         break
       case 'ia32':
         localFileExisted = existsSync(
-          join(__dirname, 'longport.win32-ia32-msvc.node')
+          join(__dirname, 'longportwhale.win32-ia32-msvc.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.win32-ia32-msvc.node')
+            nativeBinding = require('./longportwhale.win32-ia32-msvc.node')
           } else {
-            nativeBinding = require('longport-win32-ia32-msvc')
+            nativeBinding = require('longportwhale-win32-ia32-msvc')
           }
         } catch (e) {
           loadError = e
@@ -91,13 +91,13 @@ switch (platform) {
         break
       case 'arm64':
         localFileExisted = existsSync(
-          join(__dirname, 'longport.win32-arm64-msvc.node')
+          join(__dirname, 'longportwhale.win32-arm64-msvc.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.win32-arm64-msvc.node')
+            nativeBinding = require('./longportwhale.win32-arm64-msvc.node')
           } else {
-            nativeBinding = require('longport-win32-arm64-msvc')
+            nativeBinding = require('longportwhale-win32-arm64-msvc')
           }
         } catch (e) {
           loadError = e
@@ -108,23 +108,23 @@ switch (platform) {
     }
     break
   case 'darwin':
-    localFileExisted = existsSync(join(__dirname, 'longport.darwin-universal.node'))
+    localFileExisted = existsSync(join(__dirname, 'longportwhale.darwin-universal.node'))
     try {
       if (localFileExisted) {
-        nativeBinding = require('./longport.darwin-universal.node')
+        nativeBinding = require('./longportwhale.darwin-universal.node')
       } else {
-        nativeBinding = require('longport-darwin-universal')
+        nativeBinding = require('longportwhale-darwin-universal')
       }
       break
     } catch {}
     switch (arch) {
       case 'x64':
-        localFileExisted = existsSync(join(__dirname, 'longport.darwin-x64.node'))
+        localFileExisted = existsSync(join(__dirname, 'longportwhale.darwin-x64.node'))
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.darwin-x64.node')
+            nativeBinding = require('./longportwhale.darwin-x64.node')
           } else {
-            nativeBinding = require('longport-darwin-x64')
+            nativeBinding = require('longportwhale-darwin-x64')
           }
         } catch (e) {
           loadError = e
@@ -132,13 +132,13 @@ switch (platform) {
         break
       case 'arm64':
         localFileExisted = existsSync(
-          join(__dirname, 'longport.darwin-arm64.node')
+          join(__dirname, 'longportwhale.darwin-arm64.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.darwin-arm64.node')
+            nativeBinding = require('./longportwhale.darwin-arm64.node')
           } else {
-            nativeBinding = require('longport-darwin-arm64')
+            nativeBinding = require('longportwhale-darwin-arm64')
           }
         } catch (e) {
           loadError = e
@@ -152,12 +152,12 @@ switch (platform) {
     if (arch !== 'x64') {
       throw new Error(`Unsupported architecture on FreeBSD: ${arch}`)
     }
-    localFileExisted = existsSync(join(__dirname, 'longport.freebsd-x64.node'))
+    localFileExisted = existsSync(join(__dirname, 'longportwhale.freebsd-x64.node'))
     try {
       if (localFileExisted) {
-        nativeBinding = require('./longport.freebsd-x64.node')
+        nativeBinding = require('./longportwhale.freebsd-x64.node')
       } else {
-        nativeBinding = require('longport-freebsd-x64')
+        nativeBinding = require('longportwhale-freebsd-x64')
       }
     } catch (e) {
       loadError = e
@@ -168,26 +168,26 @@ switch (platform) {
       case 'x64':
         if (isMusl()) {
           localFileExisted = existsSync(
-            join(__dirname, 'longport.linux-x64-musl.node')
+            join(__dirname, 'longportwhale.linux-x64-musl.node')
           )
           try {
             if (localFileExisted) {
-              nativeBinding = require('./longport.linux-x64-musl.node')
+              nativeBinding = require('./longportwhale.linux-x64-musl.node')
             } else {
-              nativeBinding = require('longport-linux-x64-musl')
+              nativeBinding = require('longportwhale-linux-x64-musl')
             }
           } catch (e) {
             loadError = e
           }
         } else {
           localFileExisted = existsSync(
-            join(__dirname, 'longport.linux-x64-gnu.node')
+            join(__dirname, 'longportwhale.linux-x64-gnu.node')
           )
           try {
             if (localFileExisted) {
-              nativeBinding = require('./longport.linux-x64-gnu.node')
+              nativeBinding = require('./longportwhale.linux-x64-gnu.node')
             } else {
-              nativeBinding = require('longport-linux-x64-gnu')
+              nativeBinding = require('longportwhale-linux-x64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -197,26 +197,26 @@ switch (platform) {
       case 'arm64':
         if (isMusl()) {
           localFileExisted = existsSync(
-            join(__dirname, 'longport.linux-arm64-musl.node')
+            join(__dirname, 'longportwhale.linux-arm64-musl.node')
           )
           try {
             if (localFileExisted) {
-              nativeBinding = require('./longport.linux-arm64-musl.node')
+              nativeBinding = require('./longportwhale.linux-arm64-musl.node')
             } else {
-              nativeBinding = require('longport-linux-arm64-musl')
+              nativeBinding = require('longportwhale-linux-arm64-musl')
             }
           } catch (e) {
             loadError = e
           }
         } else {
           localFileExisted = existsSync(
-            join(__dirname, 'longport.linux-arm64-gnu.node')
+            join(__dirname, 'longportwhale.linux-arm64-gnu.node')
           )
           try {
             if (localFileExisted) {
-              nativeBinding = require('./longport.linux-arm64-gnu.node')
+              nativeBinding = require('./longportwhale.linux-arm64-gnu.node')
             } else {
-              nativeBinding = require('longport-linux-arm64-gnu')
+              nativeBinding = require('longportwhale-linux-arm64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -224,42 +224,57 @@ switch (platform) {
         }
         break
       case 'arm':
-        localFileExisted = existsSync(
-          join(__dirname, 'longport.linux-arm-gnueabihf.node')
-        )
-        try {
-          if (localFileExisted) {
-            nativeBinding = require('./longport.linux-arm-gnueabihf.node')
-          } else {
-            nativeBinding = require('longport-linux-arm-gnueabihf')
-          }
-        } catch (e) {
-          loadError = e
-        }
-        break
-      case 'riscv64':
         if (isMusl()) {
           localFileExisted = existsSync(
-            join(__dirname, 'longport.linux-riscv64-musl.node')
+            join(__dirname, 'longportwhale.linux-arm-musleabihf.node')
           )
           try {
             if (localFileExisted) {
-              nativeBinding = require('./longport.linux-riscv64-musl.node')
+              nativeBinding = require('./longportwhale.linux-arm-musleabihf.node')
             } else {
-              nativeBinding = require('longport-linux-riscv64-musl')
+              nativeBinding = require('longportwhale-linux-arm-musleabihf')
             }
           } catch (e) {
             loadError = e
           }
         } else {
           localFileExisted = existsSync(
-            join(__dirname, 'longport.linux-riscv64-gnu.node')
+            join(__dirname, 'longportwhale.linux-arm-gnueabihf.node')
           )
           try {
             if (localFileExisted) {
-              nativeBinding = require('./longport.linux-riscv64-gnu.node')
+              nativeBinding = require('./longportwhale.linux-arm-gnueabihf.node')
             } else {
-              nativeBinding = require('longport-linux-riscv64-gnu')
+              nativeBinding = require('longportwhale-linux-arm-gnueabihf')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        }
+        break
+      case 'riscv64':
+        if (isMusl()) {
+          localFileExisted = existsSync(
+            join(__dirname, 'longportwhale.linux-riscv64-musl.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./longportwhale.linux-riscv64-musl.node')
+            } else {
+              nativeBinding = require('longportwhale-linux-riscv64-musl')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        } else {
+          localFileExisted = existsSync(
+            join(__dirname, 'longportwhale.linux-riscv64-gnu.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./longportwhale.linux-riscv64-gnu.node')
+            } else {
+              nativeBinding = require('longportwhale-linux-riscv64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -268,13 +283,13 @@ switch (platform) {
         break
       case 's390x':
         localFileExisted = existsSync(
-          join(__dirname, 'longport.linux-s390x-gnu.node')
+          join(__dirname, 'longportwhale.linux-s390x-gnu.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./longport.linux-s390x-gnu.node')
+            nativeBinding = require('./longportwhale.linux-s390x-gnu.node')
           } else {
-            nativeBinding = require('longport-linux-s390x-gnu')
+            nativeBinding = require('longportwhale-linux-s390x-gnu')
           }
         } catch (e) {
           loadError = e
@@ -295,103 +310,21 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Config, Decimal, HttpClient, QuoteContext, PushQuoteEvent, PushDepthEvent, PushBrokersEvent, PushTradesEvent, PushCandlestickEvent, Subscription, DerivativeType, TradeStatus, TradeSession, SubType, TradeDirection, OptionType, OptionDirection, WarrantType, Period, AdjustType, SecurityBoard, SecurityStaticInfo, PrePostQuote, SecurityQuote, OptionQuote, WarrantQuote, Depth, SecurityDepth, Brokers, SecurityBrokers, ParticipantInfo, Trade, IntradayLine, Candlestick, StrikePriceInfo, IssuerInfo, SortOrderType, WarrantSortBy, FilterWarrantExpiryDate, FilterWarrantInOutBoundsType, WarrantInfo, WarrantStatus, TradingSessionInfo, MarketTradingSession, RealtimeQuote, PushQuote, PushDepth, PushBrokers, PushTrades, PushCandlestick, MarketTradingDays, CapitalFlowLine, CapitalDistribution, CapitalDistributionResponse, WatchlistGroup, WatchlistSecurity, SecuritiesUpdateMode, CalcIndex, SecurityCalcIndex, NaiveDate, Time, NaiveDatetime, TradeContext, TopicType, Execution, OrderStatus, OrderSide, OrderType, OrderTag, TimeInForceType, TriggerStatus, OutsideRTH, Order, CommissionFreeStatus, DeductionStatus, ChargeCategoryCode, OrderHistoryDetail, OrderChargeFee, OrderChargeItem, OrderChargeDetail, OrderDetail, PushOrderChanged, SubmitOrderResponse, CashInfo, AccountBalance, BalanceType, CashFlowDirection, CashFlow, FundPositionsResponse, FundPositionChannel, FundPosition, StockPositionsResponse, StockPositionChannel, StockPosition, MarginRatio, EstimateMaxPurchaseQuantityResponse, Market, Language } = nativeBinding
+const { Config, Decimal, HttpClient, NaiveDate, Time, NaiveDatetime, TradeContext, TopicType, OrderStatus, OrderSide, OrderType, OrderTag, TriggerStatus, PushOrderChanged, Market, Language } = nativeBinding
 
 module.exports.Config = Config
 module.exports.Decimal = Decimal
 module.exports.HttpClient = HttpClient
-module.exports.QuoteContext = QuoteContext
-module.exports.PushQuoteEvent = PushQuoteEvent
-module.exports.PushDepthEvent = PushDepthEvent
-module.exports.PushBrokersEvent = PushBrokersEvent
-module.exports.PushTradesEvent = PushTradesEvent
-module.exports.PushCandlestickEvent = PushCandlestickEvent
-module.exports.Subscription = Subscription
-module.exports.DerivativeType = DerivativeType
-module.exports.TradeStatus = TradeStatus
-module.exports.TradeSession = TradeSession
-module.exports.SubType = SubType
-module.exports.TradeDirection = TradeDirection
-module.exports.OptionType = OptionType
-module.exports.OptionDirection = OptionDirection
-module.exports.WarrantType = WarrantType
-module.exports.Period = Period
-module.exports.AdjustType = AdjustType
-module.exports.SecurityBoard = SecurityBoard
-module.exports.SecurityStaticInfo = SecurityStaticInfo
-module.exports.PrePostQuote = PrePostQuote
-module.exports.SecurityQuote = SecurityQuote
-module.exports.OptionQuote = OptionQuote
-module.exports.WarrantQuote = WarrantQuote
-module.exports.Depth = Depth
-module.exports.SecurityDepth = SecurityDepth
-module.exports.Brokers = Brokers
-module.exports.SecurityBrokers = SecurityBrokers
-module.exports.ParticipantInfo = ParticipantInfo
-module.exports.Trade = Trade
-module.exports.IntradayLine = IntradayLine
-module.exports.Candlestick = Candlestick
-module.exports.StrikePriceInfo = StrikePriceInfo
-module.exports.IssuerInfo = IssuerInfo
-module.exports.SortOrderType = SortOrderType
-module.exports.WarrantSortBy = WarrantSortBy
-module.exports.FilterWarrantExpiryDate = FilterWarrantExpiryDate
-module.exports.FilterWarrantInOutBoundsType = FilterWarrantInOutBoundsType
-module.exports.WarrantInfo = WarrantInfo
-module.exports.WarrantStatus = WarrantStatus
-module.exports.TradingSessionInfo = TradingSessionInfo
-module.exports.MarketTradingSession = MarketTradingSession
-module.exports.RealtimeQuote = RealtimeQuote
-module.exports.PushQuote = PushQuote
-module.exports.PushDepth = PushDepth
-module.exports.PushBrokers = PushBrokers
-module.exports.PushTrades = PushTrades
-module.exports.PushCandlestick = PushCandlestick
-module.exports.MarketTradingDays = MarketTradingDays
-module.exports.CapitalFlowLine = CapitalFlowLine
-module.exports.CapitalDistribution = CapitalDistribution
-module.exports.CapitalDistributionResponse = CapitalDistributionResponse
-module.exports.WatchlistGroup = WatchlistGroup
-module.exports.WatchlistSecurity = WatchlistSecurity
-module.exports.SecuritiesUpdateMode = SecuritiesUpdateMode
-module.exports.CalcIndex = CalcIndex
-module.exports.SecurityCalcIndex = SecurityCalcIndex
 module.exports.NaiveDate = NaiveDate
 module.exports.Time = Time
 module.exports.NaiveDatetime = NaiveDatetime
 module.exports.TradeContext = TradeContext
 module.exports.TopicType = TopicType
-module.exports.Execution = Execution
 module.exports.OrderStatus = OrderStatus
 module.exports.OrderSide = OrderSide
 module.exports.OrderType = OrderType
 module.exports.OrderTag = OrderTag
-module.exports.TimeInForceType = TimeInForceType
 module.exports.TriggerStatus = TriggerStatus
-module.exports.OutsideRTH = OutsideRTH
-module.exports.Order = Order
-module.exports.CommissionFreeStatus = CommissionFreeStatus
-module.exports.DeductionStatus = DeductionStatus
-module.exports.ChargeCategoryCode = ChargeCategoryCode
-module.exports.OrderHistoryDetail = OrderHistoryDetail
-module.exports.OrderChargeFee = OrderChargeFee
-module.exports.OrderChargeItem = OrderChargeItem
-module.exports.OrderChargeDetail = OrderChargeDetail
-module.exports.OrderDetail = OrderDetail
 module.exports.PushOrderChanged = PushOrderChanged
-module.exports.SubmitOrderResponse = SubmitOrderResponse
-module.exports.CashInfo = CashInfo
-module.exports.AccountBalance = AccountBalance
-module.exports.BalanceType = BalanceType
-module.exports.CashFlowDirection = CashFlowDirection
-module.exports.CashFlow = CashFlow
-module.exports.FundPositionsResponse = FundPositionsResponse
-module.exports.FundPositionChannel = FundPositionChannel
-module.exports.FundPosition = FundPosition
-module.exports.StockPositionsResponse = StockPositionsResponse
-module.exports.StockPositionChannel = StockPositionChannel
-module.exports.StockPosition = StockPosition
-module.exports.MarginRatio = MarginRatio
-module.exports.EstimateMaxPurchaseQuantityResponse = EstimateMaxPurchaseQuantityResponse
 module.exports.Market = Market
 module.exports.Language = Language

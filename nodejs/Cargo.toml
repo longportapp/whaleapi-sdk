@@ -1,14 +1,14 @@
 [package]
 edition = "2021"
-name = "longport-nodejs"
-version = "1.0.23"
+name = "longportwhale-nodejs"
+version = "1.0.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-longport = { path = "../rust" }
-longport-nodejs-macros = { path = "crates/macros" }
+longportwhale = { path = "../rust" }
+longportwhale-nodejs-macros = { path = "crates/macros" }
 
 napi = { version = "2.16.1", default-features = false, features = [
     "napi4",

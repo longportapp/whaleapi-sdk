@@ -1,10 +1,10 @@
 {
-  "name": "longport",
-  "version": "0.0.0",
+  "name": "longportwhale",
+  "version": "1.0.0",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
-    "name": "longport",
+    "name": "longportwhale",
     "triples": {
       "additional": [
         "aarch64-apple-darwin"
@@ -12,12 +12,12 @@
     }
   },
   "license": "MIT OR Apache-2.0",
-  "description": "A Node.js library for LongPort Open API",
+  "description": "A Node.js library for WhaleAPI",
   "repository": {
     "type": "git",
-    "url": "https://github.com/longportapp/openapi-sdk"
+    "url": "https://github.com/longportapp/whaleapi-sdk"
   },
-  "homepage": "https://open.longportapp.com/en/",
+  "homepage": "https://longbridgewhale.com/",
   "devDependencies": {
     "@napi-rs/cli": "^2.9.0"
   },
