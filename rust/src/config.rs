@@ -1,17 +1,11 @@
-use http::Method;
 pub(crate) use http::{header, HeaderValue, Request};
-use longport_httpcli::{is_cn, HttpClient, HttpClientConfig, Json};
+use longportwhale_httpcli::{HttpClient, HttpClientConfig};
 use num_enum::IntoPrimitive;
-use serde::{Deserialize, Serialize};
-use time::OffsetDateTime;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 
 use crate::error::Result;
 
-const QUOTE_WS_URL: &str = "wss://openapi-quote.longportapp.com/v2";
-const TRADE_WS_URL: &str = "wss://openapi-trade.longportapp.com/v2";
-const CN_QUOTE_WS_URL: &str = "wss://openapi-quote.longportapp.cn/v2";
-const CN_TRADE_WS_URL: &str = "wss://openapi-trade.longportapp.cn/v2";
+const TRADE_WS_URL: &str = "wss://openapi-trade.longportapp.com";
 
 /// Language identifier
 #[derive(Debug, Copy, Clone, PartialEq, Eq, IntoPrimitive)]
@@ -40,7 +34,6 @@ impl Language {
 #[derive(Debug, Clone)]
 pub struct Config {
     pub(crate) http_cli_config: HttpClientConfig,
-    pub(crate) quote_ws_url: String,
     pub(crate) trade_ws_url: String,
     pub(crate) language: Language,
 }
@@ -54,18 +47,7 @@ impl Config {
     ) -> Self {
         Self {
             http_cli_config: HttpClientConfig::new(app_key, app_secret, access_token),
-            quote_ws_url: if is_cn() {
-                CN_QUOTE_WS_URL
-            } else {
-                QUOTE_WS_URL
-            }
-            .to_string(),
-            trade_ws_url: if is_cn() {
-                CN_TRADE_WS_URL
-            } else {
-                TRADE_WS_URL
-            }
-            .to_string(),
+            trade_ws_url: TRADE_WS_URL.to_string(),
             language: Language::EN,
         }
     }
@@ -81,38 +63,19 @@ impl Config {
     /// - `LONGPORT_APP_SECRET` - App secret
     /// - `LONGPORT_ACCESS_TOKEN` - Access token
     /// - `LONGPORT_HTTP_URL` - HTTP endpoint url (Default: `https://openapi.longportapp.com`)
-    /// - `LONGPORT_QUOTE_WS_URL` - Quote websocket endpoint url (Default:
-    ///   `wss://openapi-quote.longportapp.com/v2`)
     /// - `LONGPORT_TRADE_WS_URL` - Trade websocket endpoint url (Default:
-    ///   `wss://openapi-trade.longportapp.com/v2`)
+    ///   `wss://openapi-trade.longportapp.com`)
     pub fn from_env() -> Result<Self> {
         let _ = dotenv::dotenv();
 
         let http_cli_config = HttpClientConfig::from_env()?;
-        let quote_ws_url = std::env::var("LONGBRIDGE_QUOTE_WS_URL")
-            .or_else(|_| std::env::var("LONGPORT_QUOTE_WS_URL"))
+        let trade_ws_url = std::env::var("LONGPORT_TRADE_WS_URL")
             .unwrap_or_else(|_| {
-                if is_cn() {
-                    CN_QUOTE_WS_URL
-                } else {
-                    QUOTE_WS_URL
-                }
-                .to_string()
-            });
-        let trade_ws_url = std::env::var("LONGBRIDGE_TRADE_WS_URL")
-            .or_else(|_| std::env::var("LONGPORT_TRADE_WS_URL"))
-            .unwrap_or_else(|_| {
-                if is_cn() {
-                    CN_TRADE_WS_URL
-                } else {
-                    TRADE_WS_URL
-                }
-                .to_string()
+                TRADE_WS_URL.to_string()
             });
 
         Ok(Config {
             http_cli_config,
-            quote_ws_url,
             trade_ws_url,
             language: Language::EN,
         })
@@ -129,22 +92,9 @@ impl Config {
         self
     }
 
-    /// Specifies the url of the OpenAPI quote websocket server.
-    ///
-    /// Default: `wss://openapi-quote.longportapp.com`
-    ///
-    /// NOTE: Usually you don't need to change it.
-    #[must_use]
-    pub fn quote_ws_url(self, url: impl Into<String>) -> Self {
-        Self {
-            quote_ws_url: url.into(),
-            ..self
-        }
-    }
-
     /// Specifies the url of the OpenAPI trade websocket server.
     ///
-    /// Default: `wss://openapi-trade.longportapp.com/v2`
+    /// Default: `wss://openapi-trade.longportapp.com`
     ///
     /// NOTE: Usually you don't need to change it.
     #[must_use]
@@ -162,8 +112,8 @@ impl Config {
         Self { language, ..self }
     }
 
-    #[inline]
-    pub(crate) fn create_http_client(&self) -> HttpClient {
+    /// Create http client use the http client config
+    pub fn create_http_client(&self) -> HttpClient {
         HttpClient::new(self.http_cli_config.clone())
             .header(header::ACCEPT_LANGUAGE, self.language.as_str())
     }
@@ -178,72 +128,9 @@ impl Config {
     }
 
     #[inline]
-    pub(crate) fn create_quote_ws_request(
-        &self,
-    ) -> tokio_tungstenite::tungstenite::Result<Request<()>> {
-        self.create_ws_request(&self.quote_ws_url)
-    }
-
-    #[inline]
     pub(crate) fn create_trade_ws_request(
         &self,
     ) -> tokio_tungstenite::tungstenite::Result<Request<()>> {
         self.create_ws_request(&self.trade_ws_url)
-    }
-
-    /// Gets a new `access_token`
-    ///
-    /// `expired_at` - The expiration time of the access token, defaults to `90`
-    /// days.
-    ///
-    /// Reference: <https://open.longportapp.com/en/docs/refresh-token-api>
-    pub async fn refresh_access_token(&self, expired_at: Option<OffsetDateTime>) -> Result<String> {
-        #[derive(Debug, Serialize)]
-        struct Request {
-            expired_at: String,
-        }
-
-        #[derive(Debug, Deserialize)]
-        struct Response {
-            token: String,
-        }
-
-        let request = Request {
-            expired_at: expired_at
-                .unwrap_or_else(|| OffsetDateTime::now_utc() + time::Duration::days(90))
-                .format(&time::format_description::well_known::Rfc3339)
-                .unwrap(),
-        };
-
-        let new_token = self
-            .create_http_client()
-            .request(Method::GET, "/v1/token/refresh")
-            .query_params(request)
-            .response::<Json<Response>>()
-            .send()
-            .await?
-            .0
-            .token;
-        Ok(new_token)
-    }
-
-    /// Gets a new `access_token`, and also replaces the `access_token` in
-    /// `Config`.
-    ///
-    /// `expired_at` - The expiration time of the access token, defaults to `90`
-    /// days.
-    ///
-    /// Reference: <https://open.longportapp.com/en/docs/refresh-token-api>
-    #[cfg(feature = "blocking")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "blocking")))]
-    pub fn refresh_access_token_blocking(
-        &self,
-        expired_at: Option<OffsetDateTime>,
-    ) -> Result<String> {
-        tokio::runtime::Builder::new_current_thread()
-            .enable_all()
-            .build()
-            .expect("create tokio runtime")
-            .block_on(self.refresh_access_token(expired_at))
     }
 }

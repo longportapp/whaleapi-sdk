@@ -96,23 +96,6 @@ pub(crate) mod date_opt {
     }
 }
 
-pub(crate) mod risk_level {
-    use super::*;
-
-    pub(crate) fn deserialize<'de, D>(deserializer: D) -> Result<i32, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let value = String::deserialize(deserializer)?;
-        if !value.is_empty() {
-            Ok(value
-                .parse::<i32>()
-                .map_err(|err| D::Error::custom(err.to_string()))?)
-        } else {
-            Ok(0)
-        }
-    }
-}
 
 pub(crate) mod decimal_empty_is_0 {
     use rust_decimal::Decimal;
@@ -190,24 +173,6 @@ pub(crate) mod trigger_status {
             "NOT_USED" => Ok(None),
             _ => Ok(Some(
                 TriggerStatus::from_str(value.as_str()).unwrap_or_default(),
-            )),
-        }
-    }
-}
-
-pub(crate) mod outside_rth {
-    use super::*;
-    use crate::trade::OutsideRTH;
-
-    pub(crate) fn deserialize<'de, D>(deserializer: D) -> Result<Option<OutsideRTH>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let value = String::deserialize(deserializer)?;
-        match value.as_str() {
-            "UnknownOutsideRth" => Ok(None),
-            _ => Ok(Some(
-                OutsideRTH::from_str(value.as_str()).unwrap_or_default(),
             )),
         }
     }

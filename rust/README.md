@@ -20,15 +20,14 @@
 </div>
 
 
-`longport` provides an easy-to-use interface for invokes [`LongPort OpenAPI`](https://open.longportapp.com/en/).
-
+`LongportWhale` provides an easy-to-use interface for invokes [`LongPort Whale OpenAPI`]
 ## Quickstart
 
 _Add dependencies to `Cargo.toml`_
 
 ```toml
 [dependencies]
-longport = "1.0.0"
+longportwhale = "1.0.0"
 ```
 
 _Setting environment variables(MacOS/Linux)_
@@ -45,99 +44,6 @@ _Setting environment variables(Windows)_
 setx LONGPORT_APP_KEY "App Key get from user center"
 setx LONGPORT_APP_SECRET "App Secret get from user center"
 setx LONGPORT_ACCESS_TOKEN "Access Token get from user center"
-```
-
-## Quote API _(Get basic information of securities)_
-
-```rust,no_run
-use std::sync::Arc;
-
-use longport::{
-    decimal,
-    trade::{OrderSide, OrderType, SubmitOrderOptions, TimeInForceType},
-    Config, QuoteContext, TradeContext,
-};
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Load configuration from environment variables
-    let config = Arc::new(Config::from_env()?);
-
-    // Create a context for quote APIs
-    let (ctx, _) = QuoteContext::try_new(config.clone()).await?;
-
-    // Get basic information of securities
-    let resp = ctx
-        .quote(["700.HK", "AAPL.US", "TSLA.US", "NFLX.US"])
-        .await?;
-    println!("{:?}", resp);
-
-    Ok(())
-}
-```
-
-## Quote API _(Subscribe quotes)_
-
-```rust, no_run
-use std::sync::Arc;
-
-use longport::{quote::SubFlags, Config, QuoteContext};
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Load configuration from environment variables
-    let config = Arc::new(Config::from_env()?);
-
-    // Create a context for quote APIs
-    let (ctx, mut receiver) = QuoteContext::try_new(config).await?;
-
-    // Subscribe
-    ctx.subscribe(["700.HK"], SubFlags::QUOTE, true).await?;
-
-    // Receive push events
-    while let Some(event) = receiver.recv().await {
-        println!("{:?}", event);
-    }
-
-    Ok(())
-}
-```
-
-## Trade API _(Submit order)_
-
-```rust, no_run
-use std::sync::Arc;
-
-use longport::{
-    decimal,
-    trade::{OrderSide, OrderType, SubmitOrderOptions, TimeInForceType},
-    Config, TradeContext,
-};
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Load configuration from environment variables
-    let config = Arc::new(Config::from_env()?);
-
-    // Create a context for trade APIs
-    let (ctx, _) = TradeContext::try_new(config).await?;
-
-    // Submit order
-    let opts = SubmitOrderOptions::new(
-        "700.HK",
-        OrderType::LO,
-        OrderSide::Buy,
-        500,
-        TimeInForceType::Day,
-    )
-    .submitted_price(decimal!(50i32))
-    .remark("Hello from Rust SDK".to_string());
-
-    let resp = ctx.submit_order(opts).await?;
-    println!("{:?}", resp);
-
-    Ok(())
-}
 ```
 
 ## Crate features

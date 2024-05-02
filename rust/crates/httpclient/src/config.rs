@@ -1,7 +1,6 @@
-use crate::{is_cn, HttpClientError};
+use crate::{HttpClientError};
 
-const HTTP_URL: &str = "https://openapi.longportapp.com";
-const CN_HTTP_URL: &str = "https://openapi.longportapp.cn";
+const HTTP_URL: &str = "https://api.longbridgewhale.com";
 
 /// Configuration options for Http client
 #[derive(Debug, Clone)]
@@ -23,7 +22,7 @@ impl HttpClientConfig {
         app_secret: impl Into<String>,
         access_token: impl Into<String>,
     ) -> Self {
-        let http_url = if is_cn() { CN_HTTP_URL } else { HTTP_URL };
+        let http_url = HTTP_URL;
         Self {
             http_url: http_url.to_string(),
             app_key: app_key.into(),

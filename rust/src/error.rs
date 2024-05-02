@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
-use longport_httpcli::HttpClientError;
-use longport_wscli::WsClientError;
+use longportwhale_httpcli::HttpClientError;
+use longportwhale_wscli::WsClientError;
 
 /// LongPort OpenAPI SDK error type
 #[derive(Debug, thiserror::Error)]

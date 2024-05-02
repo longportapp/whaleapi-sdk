@@ -5,7 +5,7 @@ use tokio::sync::mpsc;
 
 use crate::{blocking::BlockingError, Result};
 
-const THREAD_NAME: &str = "longport-sync-runtime";
+const THREAD_NAME: &str = "longportwhale-sync-runtime";
 
 type ExecFn<Ctx> = Box<dyn FnOnce(Arc<Ctx>) -> BoxFuture<'static, ()> + Send + 'static>;
 
@@ -57,7 +57,7 @@ where
                             res
                         }
                         Err(err) => {
-                            tracing::error!(error = %err, "failed to create quote context");
+                            tracing::error!(error = %err, "failed to create trade context");
                             let _ = init_tx.send(Err(err));
                             return;
                         }

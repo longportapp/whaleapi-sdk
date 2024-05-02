@@ -1,23 +1,23 @@
 [package]
 edition = "2021"
-name = "longport"
-version = "1.0.23"
-description = "LongPort OpenAPI SDK for Rust"
-homepage = "https://open.longportapp.com/en/"
+name = "longportwhale"
+version = "1.0.0"
+description = "LongPort Whale OpenAPI SDK for Rust"
+homepage = "https://longbridgewhale.com/"
 readme = "README.md"
-repository = "https://github.com/longportapp/openapi-sdk"
+repository = "https://github.com/longportapp/whaleapi-sdk"
 license = "MIT OR Apache-2.0"
-keywords = ["longport", "openapi", "sdk"]
+keywords = ["longport", "whale", "openapi", "sdk"]
 categories = ["api-bindings"]
 
 [features]
 blocking = ["flume"]
 
 [dependencies]
-longport-wscli = { path = "crates/wsclient", version = "1.0.23" }
-longport-httpcli = { path = "crates/httpclient", version = "1.0.23" }
-longport-proto = { path = "crates/proto", version = "1.0.23" }
-longport-candlesticks = { path = "crates/candlesticks", version = "1.0.23" }
+longportwhale-wscli = { path = "crates/wsclient", version = "1.0.0" }
+longportwhale-httpcli = { path = "crates/httpclient", version = "1.0.0" }
+longport-proto = { version = "1.0.23" }
+longport-candlesticks = { version = "1.0.23" }
 
 tokio = { version = "1.18.2", features = [
   "time",

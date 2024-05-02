@@ -1,8 +1,9 @@
 use std::{collections::HashSet, sync::Arc, time::Duration};
 
-use longport_httpcli::HttpClient;
+
 use longport_proto::trade::{Sub, SubResponse, Unsub, UnsubResponse};
-use longport_wscli::{
+use longportwhale_httpcli::HttpClient;
+use longportwhale_wscli::{
     CodecType, Platform, ProtocolVersion, WsClient, WsClientError, WsEvent, WsSession,
 };
 use tokio::sync::{mpsc, oneshot};
@@ -45,7 +46,7 @@ impl Core {
         push_tx: mpsc::UnboundedSender<PushEvent>,
     ) -> Result<Self> {
         let http_cli = config.create_http_client();
-        let otp = http_cli.get_otp_v2().await?;
+        let otp = http_cli.get_otp().await?;
 
         let (event_tx, event_rx) = mpsc::unbounded_channel();
 
@@ -134,7 +135,7 @@ impl Core {
                         }
                     }
                     _ => {
-                        let otp = match self.http_cli.get_otp_v2().await {
+                        let otp = match self.http_cli.get_otp().await {
                             Ok(otp) => otp,
                             Err(err) => {
                                 tracing::error!(error = %err, "failed to request otp");
