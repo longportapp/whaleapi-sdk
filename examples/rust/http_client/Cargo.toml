@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-longport = { path = "../../../rust" }
+longportwhale = { path = "../../../rust" }
+serde = { version = "1.0.199", features = ["derive"] }
 tokio = { version = "1.19", features = ["rt-multi-thread", "macros"] }
 tracing-subscriber = { version = "0.3.18", features = ["fmt", "env-filter"] }

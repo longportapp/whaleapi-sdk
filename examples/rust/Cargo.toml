@@ -1,10 +1,5 @@
 [workspace]
 resolver = "2"
 members = [
-    "account_asset",
-    "subscribe_quote",
-    "submit_order",
-    "today_orders",
-    "subscribe_candlesticks",
     "http_client",
 ]
