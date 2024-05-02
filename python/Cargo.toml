@@ -1,22 +1,22 @@
 [package]
 edition = "2021"
-name = "longport-python"
-version = "1.0.23"
-description = "LongPort OpenAPI SDK for Python"
-homepage = "https://open.longportapp.com/en/"
+name = "longportwhale-python"
+version = "1.0.0"
+description = "LongPort Whale OpenAPI SDK for Python"
+homepage = "https://longbridgewhale.com/"
 readme = "README.md"
-repository = "https://github.com/longportapp/openapi-sdk"
+repository = "https://github.com/longportapp/whaleapi-sdk"
 license = "MIT OR Apache-2.0"
-keywords = ["longport", "openapi", "sdk"]
+keywords = ["longport", "whale", "openapi", "sdk"]
 categories = ["api-bindings"]
 
 [lib]
-name = "longport"
+name = "longportwhale"
 crate-type = ["cdylib"]
 
 [dependencies]
-longport = { path = "../rust", features = ["blocking"] }
-longport-python-macros = { path = "crates/macros" }
+longportwhale = { path = "../rust", features = ["blocking"] }
+longportwhale-python-macros = { path = "crates/macros" }
 
 once_cell = "1.11.0"
 parking_lot = "0.12.1"

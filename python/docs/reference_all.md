@@ -1,3 +1,3 @@
 # Code Reference
 
-::: longport.openapi
+::: longportwhale.openapi

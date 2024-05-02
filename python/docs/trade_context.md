@@ -1,3 +1,3 @@
 # TradeContext
 
-::: longport.openapi.TradeContext
+::: longportwhale.openapi.TradeContext

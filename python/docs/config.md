@@ -1,3 +1,3 @@
 # Config
 
-::: longport.openapi.Config
+::: longportwhale.openapi.Config

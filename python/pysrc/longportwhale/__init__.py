@@ -1,8 +1,8 @@
 import sys
 
-from .longport import openapi
+from .longportwhale import openapi
 
-sys.modules['longport.openapi'] = openapi
+sys.modules['longportwhale.openapi'] = openapi
 
 
 class OpenApiException(Exception):
