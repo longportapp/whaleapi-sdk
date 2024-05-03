@@ -1,9 +1,10 @@
+use std::{collections::HashSet, sync::Arc, time::Duration};
+
 use longport_proto::trade::{Sub, SubResponse, Unsub, UnsubResponse};
 use longportwhale_httpcli::HttpClient;
 use longportwhale_wscli::{
     CodecType, Platform, ProtocolVersion, WsClient, WsClientError, WsEvent, WsSession,
 };
-use std::{collections::HashSet, sync::Arc, time::Duration};
 use tokio::sync::{mpsc, oneshot};
 
 use crate::{
