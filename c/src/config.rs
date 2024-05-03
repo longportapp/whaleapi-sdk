@@ -1,8 +1,4 @@
-use std::{
-    ffi::{c_void, CStr},
-    os::raw::c_char,
-    sync::Arc,
-};
+use std::{ffi::CStr, os::raw::c_char, sync::Arc};
 
 use longportwhale::Config;
 

@@ -25,12 +25,7 @@ impl TradeContext {
         let (command_tx, command_rx) = mpsc::unbounded_channel();
         let (push_tx, push_rx) = mpsc::unbounded_channel();
         tokio::spawn(Core::try_new(config, command_rx, push_tx).await?.run());
-        Ok((
-            TradeContext {
-                command_tx,
-            },
-            push_rx,
-        ))
+        Ok((TradeContext { command_tx }, push_rx))
     }
 
     /// Subscribe

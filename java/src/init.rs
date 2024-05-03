@@ -1,10 +1,10 @@
+use crate::types::ClassLoader;
 use jni::{
     descriptors::Desc,
     objects::{GlobalRef, JClass, JValue},
     JNIEnv,
 };
 use once_cell::sync::OnceCell;
-use crate::types::ClassLoader;
 
 pub(crate) static LONG_CLASS: OnceCell<GlobalRef> = OnceCell::new();
 pub(crate) static STRING_CLASS: OnceCell<GlobalRef> = OnceCell::new();

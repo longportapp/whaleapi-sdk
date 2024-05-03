@@ -39,6 +39,8 @@ impl Config {
 
     #[classmethod]
     fn from_env(_cls: &PyType) -> PyResult<Self> {
-        Ok(Self(longportwhale::Config::from_env().map_err(ErrorNewType)?))
+        Ok(Self(
+            longportwhale::Config::from_env().map_err(ErrorNewType)?,
+        ))
     }
 }

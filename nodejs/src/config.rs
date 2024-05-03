@@ -62,6 +62,8 @@ impl Config {
     /// - `LONGPORT_TRADE_WS_URL` - Trade websocket endpoint url
     #[napi(factory)]
     pub fn from_env() -> Result<Self> {
-        Ok(Self(longportwhale::Config::from_env().map_err(ErrorNewType)?))
+        Ok(Self(
+            longportwhale::Config::from_env().map_err(ErrorNewType)?,
+        ))
     }
 }

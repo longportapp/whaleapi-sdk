@@ -2,9 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     blocking::runtime::BlockingRuntime,
-    trade::{
-        PushEvent, TopicType, TradeContext,
-    },
+    trade::{PushEvent, TopicType, TradeContext},
     Config, Result,
 };
 

@@ -7,10 +7,7 @@ use pyo3::{pyclass, pymethods, PyObject, PyResult, Python};
 use crate::{
     config::Config,
     error::ErrorNewType,
-    trade::{
-        push::handle_push_event,
-        types::TopicType,
-    },
+    trade::{push::handle_push_event, types::TopicType},
 };
 
 #[derive(Debug, Default)]

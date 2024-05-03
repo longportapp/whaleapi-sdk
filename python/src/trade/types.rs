@@ -1,10 +1,7 @@
 use longportwhale_python_macros::{PyEnum, PyObject};
 use pyo3::pyclass;
 
-use crate::{
-    decimal::PyDecimal,
-    time::PyOffsetDateTimeWrapper,
-};
+use crate::{decimal::PyDecimal, time::PyOffsetDateTimeWrapper};
 
 /// Topic type
 #[pyclass]
@@ -211,5 +208,3 @@ pub(crate) struct PushOrderChanged {
     /// Remark message
     remark: String,
 }
-
-

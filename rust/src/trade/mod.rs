@@ -8,6 +8,4 @@ mod types;
 
 pub use context::TradeContext;
 pub use push_types::{PushEvent, PushOrderChanged, TopicType};
-pub use types::{
-    OrderSide, OrderStatus, OrderTag, OrderType, TriggerStatus,
-};
+pub use types::{OrderSide, OrderStatus, OrderTag, OrderType, TriggerStatus};

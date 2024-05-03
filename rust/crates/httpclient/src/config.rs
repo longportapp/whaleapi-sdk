@@ -1,4 +1,4 @@
-use crate::{HttpClientError};
+use crate::HttpClientError;
 
 const HTTP_URL: &str = "https://api.longbridgewhale.com";
 

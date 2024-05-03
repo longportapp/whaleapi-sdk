@@ -69,10 +69,8 @@ impl Config {
         let _ = dotenv::dotenv();
 
         let http_cli_config = HttpClientConfig::from_env()?;
-        let trade_ws_url = std::env::var("LONGPORT_TRADE_WS_URL")
-            .unwrap_or_else(|_| {
-                TRADE_WS_URL.to_string()
-            });
+        let trade_ws_url =
+            std::env::var("LONGPORT_TRADE_WS_URL").unwrap_or_else(|_| TRADE_WS_URL.to_string());
 
         Ok(Config {
             http_cli_config,

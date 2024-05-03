@@ -96,7 +96,6 @@ pub(crate) mod date_opt {
     }
 }
 
-
 pub(crate) mod decimal_empty_is_0 {
     use rust_decimal::Decimal;
 

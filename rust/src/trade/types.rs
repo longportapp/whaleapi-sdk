@@ -167,20 +167,6 @@ pub enum TriggerStatus {
     Released,
 }
 
+impl_serde_for_enum_string!(OrderType, OrderStatus, OrderSide, OrderTag, TriggerStatus);
 
-
-impl_serde_for_enum_string!(
-    OrderType,
-    OrderStatus,
-    OrderSide,
-    OrderTag,
-    TriggerStatus
-);
-
-impl_default_for_enum_string!(
-    OrderType,
-    OrderStatus,
-    OrderSide,
-    OrderTag,
-    TriggerStatus
-);
+impl_default_for_enum_string!(OrderType, OrderStatus, OrderSide, OrderTag, TriggerStatus);

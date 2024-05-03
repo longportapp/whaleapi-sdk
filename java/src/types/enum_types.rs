@@ -77,4 +77,3 @@ impl_java_enum!(
     longportwhale::trade::TopicType,
     [Private]
 );
-

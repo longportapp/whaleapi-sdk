@@ -210,4 +210,3 @@ pub struct PushOrderChanged {
     /// Remark message
     remark: String,
 }
-
