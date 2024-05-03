@@ -5,17 +5,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.longportapp</groupId>
-  <artifactId>openapi-sdk</artifactId>
-  <version>0.0.1</version>
-  <name>longport-openapi</name>
-  <description>LongPort OpenAPI SDK for Java</description>
-  <url>https://github.com/longportapp/openapi-sdk</url>
+  <artifactId>whaleapi-sdk</artifactId>
+  <version>1.0.0</version>
+  <name>whaleapi</name>
+  <description>WhaleAPI SDK for Java</description>
+  <url>https://github.com/longportapp/whaleapi-sdk</url>
   <packaging>jar</packaging>
 
   <scm>
-    <connection>scm:git:git@github.com:longportapp/openapi-sdk.git</connection>
-    <developerConnection>scm:git:git@github.com:longportapp/openapi-sdk.git</developerConnection>
-    <url>https://github.com/longportapp/openapi-sdk</url>
+    <connection>scm:git:git@github.com:longportapp/whaleapi-sdk.git</connection>
+    <developerConnection>scm:git:git@github.com:longportapp/whaleapi-sdk.git</developerConnection>
+    <url>https://github.com/longportapp/whaleapi-sdk</url>
   </scm>
 
   <developers>

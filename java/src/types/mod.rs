@@ -7,7 +7,6 @@ mod optional;
 mod primary_array;
 mod primary_types;
 mod string;
-mod sub_flags;
 
 use std::borrow::Cow;
 
@@ -18,14 +17,7 @@ use jni::{
     JNIEnv,
 };
 
-pub(crate) use self::{
-    classes::{
-        CreateWatchlistGroupResponse, SecurityCalcIndex, StockPosition, StockPositionChannel,
-        StockPositionsResponse,
-    },
-    object_array::ObjectArray,
-    primary_array::PrimaryArray,
-};
+pub(crate) use self::object_array::ObjectArray;
 
 pub(crate) trait ClassLoader {
     fn init(env: &mut JNIEnv);

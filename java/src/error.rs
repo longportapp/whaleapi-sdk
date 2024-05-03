@@ -13,7 +13,7 @@ pub(crate) enum JniError {
     #[error(transparent)]
     Jni(#[from] jni::errors::Error),
     #[error(transparent)]
-    OpenApi(#[from] longport::Error),
+    OpenApi(#[from] longportwhale::Error),
     #[error("{0}")]
     Other(String),
 }
@@ -39,7 +39,7 @@ impl JniError {
 
     fn into_openapi_error_object<'a>(
         env: &mut JNIEnv<'a>,
-        err: longport::Error,
+        err: longportwhale::Error,
     ) -> Result<JObject<'a>> {
         let exception_cls = OPENAPI_EXCEPTION_CLASS.get().unwrap();
         let err = err.into_simple_error();
@@ -51,15 +51,20 @@ impl JniError {
             None => JObject::null(),
         };
         let message: JObject = env.new_string(err.message())?.into();
+        let trace_id: JObject = env.new_string(err.trace_id())?.into();
 
         env.new_object(
             exception_cls,
-            "(Ljava/lang/Long;Ljava/lang/String;)V",
-            &[JValue::from(&code), JValue::from(&message)],
+            "(Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String)V",
+            &[
+                JValue::from(&code),
+                JValue::from(&message),
+                JValue::from(&trace_id),
+            ],
         )
     }
 
-    fn throw_openapi_error(env: &mut JNIEnv, err: longport::Error) -> Result<()> {
+    fn throw_openapi_error(env: &mut JNIEnv, err: longportwhale::Error) -> Result<()> {
         let err = JThrowable::from(Self::into_openapi_error_object(env, err)?);
         env.throw(err)?;
         Ok(())

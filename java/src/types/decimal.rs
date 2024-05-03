@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 
 use jni::{errors::Result, objects::JValueOwned, JNIEnv};
-use longport::Decimal;
+use longportwhale::Decimal;
 
 use crate::{
     init::DECIMAL_CLASS,
