@@ -12,20 +12,14 @@ jobs:
       max-parallel: 1
       matrix:
         package:
-          - name: longport-proto
-            registryName: longport-proto
-            path: rust/crates/proto
-          - name: longport-httpcli
-            registryName: longport-httpcli
+          - name: longportwhale-httpcli
+            registryName: longportwhale-httpcli
             path: rust/crates/httpclient
-          - name: longport-wscli
-            registryName: longport-wscli
+          - name: longportwhale-wscli
+            registryName: longportwhale-wscli
             path: rust/crates/wsclient
-          - name: longport-candlesticks
-            registryName: longport-candlesticks
-            path: rust/crates/candlesticks
-          - name: longport
-            registryName: longport
+          - name: longportwhale
+            registryName: longportwhale
             path: rust
     steps:
       - name: Checkout
@@ -98,7 +92,7 @@ jobs:
           args: -i python --release --out dist -m python/Cargo.toml
       - name: Install built wheel - x86_64
         run: |
-          pip install longport --no-index --find-links dist --force-reinstall
+          pip install longportwhale --no-index --find-links dist --force-reinstall
       - name: Build wheels - universal2
         if: ${{ matrix.python.universal2 }}
         uses: PyO3/maturin-action@v1
@@ -107,7 +101,7 @@ jobs:
       - name: Install built wheel - universal2
         if: ${{ matrix.python.universal2 }}
         run: |
-          pip install longport --no-index --find-links dist --force-reinstall
+          pip install longportwhale --no-index --find-links dist --force-reinstall
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
@@ -143,8 +137,8 @@ jobs:
           args: -i python --release --out dist -m python/Cargo.toml
       - name: Install built wheel
         run: |
-          pip install longport --no-index --find-links dist --force-reinstall
-          python -c "import longport"
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+          python -c "import longportwhale"
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
@@ -175,8 +169,8 @@ jobs:
       - name: Install built wheel
         if: matrix.target == 'x86_64'
         run: |
-          pip install longport --no-index --find-links dist --force-reinstall
-          python -c "import longport"
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+          python -c "import longportwhale"
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
@@ -221,8 +215,8 @@ jobs:
             PYTHON=python${{ matrix.python-version }}
             $PYTHON -m venv venv
             venv/bin/pip install -U pip
-            venv/bin/pip install longport --no-index --find-links /artifacts --force-reinstall
-            venv/bin/python -c 'import longport'
+            venv/bin/pip install longportwhale --no-index --find-links /artifacts --force-reinstall
+            venv/bin/python -c 'import longportwhale'
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
@@ -233,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/longport
+      url: https://pypi.org/p/longportwhale
     permissions:
       id-token: write
     needs:
@@ -305,10 +299,10 @@ jobs:
           target: ${{ matrix.settings.target }}
 
       - name: Check with clippy
-        run: cargo clippy -p longport-nodejs --all-features
+        run: cargo clippy -p longportwhale-nodejs --all-features
 
       - name: Test
-        run: cargo test -p longport-nodejs --all-features
+        run: cargo test -p longportwhale-nodejs --all-features
 
       - name: Install napi-rs/cli
         run: npm install -g @napi-rs/cli
@@ -321,7 +315,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bindings
-          path: nodejs/longport.*.node
+          path: nodejs/longportwhale.*.node
 
   publish-nodejs-sdk:
     runs-on: ubuntu-latest
@@ -408,21 +402,21 @@ jobs:
       - name: Build
         if: ${{ matrix.settings.target != 'aarch64-unknown-linux-gnu' }}
         run: |
-          cargo build -p longport-java --release --target ${{ matrix.settings.target }}
-          mv target/${{ matrix.settings.target }}/release/${{ matrix.settings.lib_prefix }}longport_java${{ matrix.settings.lib_suffix }} longport_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
+          cargo build -p longportwhale-java --release --target ${{ matrix.settings.target }}
+          mv target/${{ matrix.settings.target }}/release/${{ matrix.settings.lib_prefix }}longportwhale_java${{ matrix.settings.lib_suffix }} longportwhale_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
 
       - name: Build with Cross
         if: ${{ matrix.settings.target == 'aarch64-unknown-linux-gnu' }}
         run: |
           cargo install cross
-          cross build -p longport-java --release --target ${{ matrix.settings.target }}
-          mv target/${{ matrix.settings.target }}/release/${{ matrix.settings.lib_prefix }}longport_java${{ matrix.settings.lib_suffix }} longport_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
+          cross build -p longportwhale-java --release --target ${{ matrix.settings.target }}
+          mv target/${{ matrix.settings.target }}/release/${{ matrix.settings.lib_prefix }}longportwhale_java${{ matrix.settings.lib_suffix }} longportwhale_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: jnis
-          path: longport_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
+          path: longportwhale_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
 
   publish-java-sdk:
     runs-on: ubuntu-latest
@@ -452,11 +446,11 @@ jobs:
           mkdir -p javasrc/target/natives/windows_64
           mkdir -p javasrc/target/natives/osx_64
           mkdir -p javasrc/target/natives/osx_arm64
-          mv jnis/longport_java-x86_64-unknown-linux-gnu.so javasrc/target/natives/linux_64/liblongport_java.so
-          mv jnis/longport_java-aarch64-unknown-linux-gnu.so javasrc/target/natives/linux_arm64/liblongport_java.so
-          mv jnis/longport_java-x86_64-pc-windows-msvc.dll javasrc/target/natives/windows_64/longport_java.dll
-          mv jnis/longport_java-x86_64-apple-darwin.dylib javasrc/target/natives/osx_64/liblongport_java.dylib
-          mv jnis/longport_java-aarch64-apple-darwin.dylib javasrc/target/natives/osx_arm64/liblongport_java.dylib
+          mv jnis/longportwhale_java-x86_64-unknown-linux-gnu.so javasrc/target/natives/linux_64/liblongportwhale_java.so
+          mv jnis/longportwhale_java-aarch64-unknown-linux-gnu.so javasrc/target/natives/linux_arm64/liblongportwhale_java.so
+          mv jnis/longportwhale_java-x86_64-pc-windows-msvc.dll javasrc/target/natives/windows_64/longportwhale_java.dll
+          mv jnis/longportwhale_java-x86_64-apple-darwin.dylib javasrc/target/natives/osx_64/liblongportwhale_java.dylib
+          mv jnis/longportwhale_java-aarch64-apple-darwin.dylib javasrc/target/natives/osx_arm64/liblongportwhale_java.dylib
 
       - name: Get version
         working-directory: java
@@ -559,17 +553,17 @@ jobs:
         if: ${{ matrix.settings.host == 'windows-latest' }}
         run: |
           md dist\lib\${{ matrix.settings.platform }}\debug
-          copy cmake.build\C\Debug\longport_c.dll dist\lib\${{ matrix.settings.platform }}\debug
-          copy cmake.build\C\Debug\longport_c.dll.lib dist\lib\${{ matrix.settings.platform }}\debug\longport_c.lib
-          copy cmake.build\Debug\longport_cpp.dll dist\lib\${{ matrix.settings.platform }}\debug
-          copy cmake.build\cpp\Debug\longport_cpp.lib dist\lib\${{ matrix.settings.platform }}\debug
+          copy cmake.build\C\Debug\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\debug
+          copy cmake.build\C\Debug\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\debug\longportwhale_c.lib
+          copy cmake.build\Debug\longportwhale_cpp.dll dist\lib\${{ matrix.settings.platform }}\debug
+          copy cmake.build\cpp\Debug\longportwhale_cpp.lib dist\lib\${{ matrix.settings.platform }}\debug
 
       - name: Copy files
         if: ${{ matrix.settings.host != 'windows-latest' }}
         run: |
           mkdir -p dist/lib/${{ matrix.settings.platform }}/debug
-          cp cmake.build/c/liblongport_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
-          cp cmake.build/liblongport_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
+          cp cmake.build/c/liblongportwhale_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
+          cp cmake.build/liblongportwhale_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -640,17 +634,17 @@ jobs:
         if: ${{ matrix.settings.host == 'windows-latest' }}
         run: |
           md dist\lib\${{ matrix.settings.platform }}\release
-          copy cmake.build\C\Release\longport_c.dll dist\lib\${{ matrix.settings.platform }}\release
-          copy cmake.build\C\Release\longport_c.dll.lib dist\lib\${{ matrix.settings.platform }}\release\longport_c.lib
-          copy cmake.build\Release\longport_cpp.dll dist\lib\${{ matrix.settings.platform }}\release
-          copy cmake.build\cpp\Release\longport_cpp.lib dist\lib\${{ matrix.settings.platform }}\release
+          copy cmake.build\C\Release\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\release
+          copy cmake.build\C\Release\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\release\longportwhale_c.lib
+          copy cmake.build\Release\longportwhale_cpp.dll dist\lib\${{ matrix.settings.platform }}\release
+          copy cmake.build\cpp\Release\longportwhale_cpp.lib dist\lib\${{ matrix.settings.platform }}\release
 
       - name: Copy files
         if: ${{ matrix.settings.host != 'windows-latest' }}
         run: |
           mkdir -p dist/lib/${{ matrix.settings.platform }}/release
-          cp cmake.build/c/liblongport_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
-          cp cmake.build/liblongport_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
+          cp cmake.build/c/liblongportwhale_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
+          cp cmake.build/liblongportwhale_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -719,8 +713,8 @@ jobs:
       - name: Copy files
         run: |
           mkdir -p dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
-          cp target/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}/liblongport_c.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
-          cp cpp/cmake.build/liblongport_cpp.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
+          cp target/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}/liblongportwhale_c.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
+          cp cpp/cmake.build/liblongportwhale_cpp.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -813,8 +807,8 @@ jobs:
       - name: Copy files
         run: |
           mkdir -p dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
-          cp target/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}/liblongport_c.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
-          cp cpp/cmake.build/liblongport_cpp.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
+          cp target/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}/liblongportwhale_c.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
+          cp cpp/cmake.build/liblongportwhale_cpp.a dist/lib/${{ matrix.settings.target }}/${{ matrix.settings.target-dir }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2

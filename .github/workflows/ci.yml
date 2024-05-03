@@ -44,10 +44,10 @@ jobs:
           components: rustfmt, clippy
 
       - name: Check with clippy
-        run: cargo clippy -p longport --all-features
+        run: cargo clippy -p longportwhale --all-features
 
       - name: Test
-        run: cargo test -p longport --all-features
+        run: cargo test -p longportwhale --all-features
 
   check-python-sdk:
     needs:
@@ -76,10 +76,10 @@ jobs:
           components: rustfmt, clippy
 
       - name: Check with clippy
-        run: cargo clippy -p longport-python --all-features
+        run: cargo clippy -p longportwhale-python --all-features
 
       - name: Test
-        run: cargo test -p longport-python --all-features
+        run: cargo test -p longportwhale-python --all-features
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -89,8 +89,8 @@ jobs:
           args: -i python${{ matrix.python-version }} --release --out dist -m python/Cargo.toml
       - name: Install built wheel
         run: |
-          pip install longport --no-index --find-links dist --force-reinstall
-          python -c "import longport"
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+          python -c "import longportwhale"
 
   check-nodejs-sdk:
     needs:
@@ -147,10 +147,10 @@ jobs:
           target: ${{ matrix.settings.target }}
 
       - name: Check with clippy
-        run: cargo clippy -p longport-nodejs --all-features
+        run: cargo clippy -p longportwhale-nodejs --all-features
 
       - name: Test
-        run: cargo test -p longport-nodejs --all-features
+        run: cargo test -p longportwhale-nodejs --all-features
 
       - name: Install napi-rs/cli
         run: npm install -g @napi-rs/cli
@@ -190,10 +190,10 @@ jobs:
         run: cargo install cargo-make
 
       - name: Check with clippy
-        run: cargo clippy -p longport-java --all-features
+        run: cargo clippy -p longportwhale-java --all-features
 
       - name: Test
-        run: cargo test -p longport-java --all-features
+        run: cargo test -p longportwhale-java --all-features
 
       - name: Compile java sources
         working-directory: java/javasrc
@@ -230,7 +230,7 @@ jobs:
         run: cargo install cargo-make
 
       - name: Check with clippy
-        run: cargo clippy -p longport-c --all-features
+        run: cargo clippy -p longportwhale-c --all-features
 
       - name: Build with cmake
         run: |
