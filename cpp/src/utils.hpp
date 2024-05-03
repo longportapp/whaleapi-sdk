@@ -20,4 +20,4 @@ get_cstring_vector(const std::vector<std::string>& values)
 }
 
 } // namespace utils
-} // namespace longport
+} // namespace longportwhale

@@ -9,13 +9,9 @@ mod string;
 
 use std::{ffi::CStr, os::raw::c_char};
 
-pub(crate) use array::CVec;
 pub(crate) use cow::CCow;
-pub(crate) use datetime::{CDate, CDateTime, CTime};
 pub(crate) use decimal::CDecimal;
 pub(crate) use language::CLanguage;
-pub(crate) use market::CMarket;
-pub(crate) use option::COption;
 pub(crate) use string::CString;
 
 pub(crate) trait ToFFI {

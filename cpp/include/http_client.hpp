@@ -9,7 +9,7 @@
 
 typedef struct lb_http_client_t lb_http_client_t;
 
-namespace longport {
+namespace longportwhale {
 
 struct HttpResult
 {

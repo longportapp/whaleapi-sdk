@@ -3,7 +3,7 @@ use std::{
     ffi::{c_char, c_void, CStr, CString},
 };
 
-use longport::{
+use longportwhale::{
     httpclient::{HttpClient, HttpClientConfig, HttpClientError},
     Error,
 };

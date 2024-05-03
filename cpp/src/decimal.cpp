@@ -1,7 +1,7 @@
 #include "decimal.hpp"
-#include "longport.h"
+#include "longportwhale.h"
 
-namespace longport {
+namespace longportwhale {
 
 Decimal::Decimal(const lb_decimal_t* other)
 {

@@ -35,7 +35,7 @@ setx LONGPORT_ACCESS_TOKEN "Access Token get from user center"
 #endif
 
 using namespace longport;
-using namespace longport::quote;
+using namespace longportwhale::quote;
 
 int
 main(int argc, char const* argv[])
@@ -97,7 +97,7 @@ main(int argc, char const* argv[])
 #endif
 
 using namespace longport;
-using namespace longport::quote;
+using namespace longportwhale::quote;
 
 int
 main(int argc, char const* argv[])
@@ -163,7 +163,7 @@ main(int argc, char const* argv[])
 #endif
 
 using namespace longport;
-using namespace longport::trade;
+using namespace longportwhale::trade;
 
 int
 main(int argc, char const* argv[])

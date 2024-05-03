@@ -1,11 +1,10 @@
 #pragma once
 
 #include <string>
-#include <utility>
 
 typedef struct lb_decimal_t lb_decimal_t;
 
-namespace longport {
+namespace longportwhale {
 
 class Decimal
 {
@@ -123,4 +122,4 @@ public:
   void norm_pdf();
 };
 
-} // namespace longport
+} // namespace longportwhale

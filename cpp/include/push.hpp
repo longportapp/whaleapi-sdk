@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace longport {
+namespace longportwhale {
 
 template<typename Ctx, typename T>
 struct PushEvent

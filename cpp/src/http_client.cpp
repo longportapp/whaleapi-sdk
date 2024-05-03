@@ -2,9 +2,9 @@
 
 #include "callback.hpp"
 #include "http_client.hpp"
-#include "longport.h"
+#include "longportwhale.h"
 
-namespace longport {
+namespace longportwhale {
 
 HttpClient::HttpClient()
   : http_client_(nullptr)

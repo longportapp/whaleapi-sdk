@@ -1,9 +1,9 @@
 #include "config.hpp"
 #include "callback.hpp"
 #include "convert.hpp"
-#include "longport.h"
+#include "longportwhale.h"
 
-namespace longport {
+namespace longportwhale {
 
 Config::Config()
 {
@@ -25,7 +25,6 @@ Config::Config(const std::string& app_key,
                const std::string& app_secret,
                const std::string& access_token,
                const std::optional<std::string>& http_url,
-               const std::optional<std::string>& quote_ws_url,
                const std::optional<std::string>& trade_ws_url,
                const std::optional<Language>& language)
 {
@@ -38,7 +37,6 @@ Config::Config(const std::string& app_key,
                           app_secret.c_str(),
                           access_token.c_str(),
                           http_url ? http_url->c_str() : nullptr,
-                          quote_ws_url ? quote_ws_url->c_str() : nullptr,
                           trade_ws_url ? trade_ws_url->c_str() : nullptr,
                           language ? &c_language : nullptr);
 }
@@ -66,30 +64,4 @@ Config::from_env(Config& config)
   }
   return status;
 }
-
-void
-Config::refresh_access_token(int64_t expired_at,
-                             AsyncCallback<void*, std::string> callback)
-{
-  lb_config_refresh_access_token(
-    config_,
-    expired_at,
-    [](auto res) {
-      auto callback_ptr =
-        callback::get_async_callback<void*, std::string>(res->userdata);
-      Status status(res->error);
-
-      if (status) {
-        std::string access_token = (const char*)res->data;
-
-        (*callback_ptr)(AsyncResult<void*, std::string>(
-          nullptr, std::move(status), &access_token));
-      } else {
-        (*callback_ptr)(
-          AsyncResult<void*, std::string>(nullptr, std::move(status), nullptr));
-      }
-    },
-    new AsyncCallback<void*, std::string>(callback));
-}
-
-} // namespace longport
+} // namespace longportwhale

@@ -4,7 +4,7 @@
 
 #include "status.hpp"
 
-namespace longport {
+namespace longportwhale {
 
 template<typename Ctx, typename T>
 struct AsyncResult
@@ -38,4 +38,4 @@ public:
 template<typename Ctx, typename T>
 using AsyncCallback = std::function<void(AsyncResult<Ctx, T>)>;
 
-} // namespace longport
+} // namespace longportwhale

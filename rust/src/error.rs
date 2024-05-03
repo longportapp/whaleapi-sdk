@@ -138,4 +138,12 @@ impl SimpleError {
             SimpleError::Other(message) => message.as_str(),
         }
     }
+
+    /// Returns trace id if have
+    pub fn trace_id(&self) -> &str {
+        match self {
+            SimpleError::Response { trace_id, .. } => trace_id.as_str(),
+            SimpleError::Other(..) => "",
+        }
+    }
 }

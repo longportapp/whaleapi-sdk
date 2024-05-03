@@ -1,7 +1,7 @@
 #include "status.hpp"
-#include "longport.h"
+#include "longportwhale.h"
 
-namespace longport {
+namespace longportwhale {
 
 Status::Status()
 {

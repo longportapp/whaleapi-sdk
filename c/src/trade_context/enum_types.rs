@@ -1,8 +1,8 @@
-use longport_c_macros::CEnum;
+use longportwhale_c_macros::CEnum;
 
 /// Topic type
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::TopicType")]
+#[c(remote = "longportwhale::trade::TopicType")]
 #[allow(clippy::enum_variant_names)]
 #[repr(C)]
 pub enum CTopicType {
@@ -13,7 +13,7 @@ pub enum CTopicType {
 
 /// Order side
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::OrderSide")]
+#[c(remote = "longportwhale::trade::OrderSide")]
 #[allow(clippy::enum_variant_names)]
 #[repr(C)]
 pub enum COrderSide {
@@ -30,7 +30,7 @@ pub enum COrderSide {
 
 /// Order type
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::OrderType")]
+#[c(remote = "longportwhale::trade::OrderType")]
 #[allow(clippy::enum_variant_names)]
 #[repr(C)]
 pub enum COrderType {
@@ -80,7 +80,7 @@ pub enum COrderType {
 
 /// Order status
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::OrderStatus")]
+#[c(remote = "longportwhale::trade::OrderStatus")]
 #[allow(clippy::enum_variant_names)]
 #[repr(C)]
 pub enum COrderStatus {
@@ -142,7 +142,7 @@ pub enum COrderStatus {
 
 /// Order tag
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::OrderTag")]
+#[c(remote = "longportwhale::trade::OrderTag")]
 #[allow(clippy::enum_variant_names)]
 #[repr(C)]
 pub enum COrderTag {
@@ -180,7 +180,7 @@ pub enum COrderTag {
 
 /// Order tag
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::TriggerStatus")]
+#[c(remote = "longportwhale::trade::TriggerStatus")]
 #[allow(clippy::enum_variant_names)]
 #[repr(C)]
 pub enum CTriggerStatus {
@@ -196,141 +196,4 @@ pub enum CTriggerStatus {
     /// Released
     #[c(remote = "Released")]
     TriggerStatusReleased,
-}
-
-/// Enable or disable outside regular trading hours
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::OutsideRTH")]
-#[allow(clippy::enum_variant_names)]
-#[repr(C)]
-pub enum COutsideRTH {
-    /// Unknown
-    #[c(remote = "Unknown")]
-    OutsideRTHUnknown,
-    /// Regular trading hour only
-    #[c(remote = "RTHOnly")]
-    OutsideRTHOnly,
-    /// Any time
-    #[c(remote = "AnyTime")]
-    OutsideRTHAnyTime,
-}
-
-/// Time in force Type
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::TimeInForceType")]
-#[allow(clippy::enum_variant_names)]
-#[repr(C)]
-pub enum CTimeInForceType {
-    /// Unknown
-    #[c(remote = "Unknown")]
-    TimeInForceUnknown,
-    /// Day Order
-    #[c(remote = "Day")]
-    TimeInForceDay,
-    /// Good Til Canceled Order
-    #[c(remote = "GoodTilCanceled")]
-    TimeInForceGoodTilCanceled,
-    /// Good Til Date Order
-    #[c(remote = "GoodTilDate")]
-    TimeInForceGoodTilDate,
-}
-
-/// Cash flow direction
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::CashFlowDirection ")]
-#[allow(clippy::enum_variant_names)]
-#[repr(C)]
-pub enum CCashFlowDirection {
-    /// Unknown
-    #[c(remote = "Unknown")]
-    CashFlowDirectionUnknown,
-    /// Out
-    #[c(remote = "Out")]
-    CashFlowDirectionOut,
-    /// In
-    #[c(remote = "In")]
-    CashFlowDirectionIn,
-}
-
-/// Balance type
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::BalanceType")]
-#[allow(clippy::enum_variant_names)]
-#[repr(C)]
-pub enum CBalanceType {
-    /// Unknown
-    #[c(remote = "Unknown")]
-    BalanceTypeUnknown,
-    /// Cash
-    #[c(remote = "Cash")]
-    BalanceTypeCash,
-    /// Stock
-    #[c(remote = "Stock")]
-    BalanceTypeStock,
-    /// Fund
-    #[c(remote = "Fund")]
-    BalanceTypeFund,
-}
-
-/// Commission-free Status
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::CommissionFreeStatus")]
-#[allow(clippy::enum_variant_names)]
-#[repr(C)]
-pub enum CCommissionFreeStatus {
-    /// Unknown
-    #[c(remote = "Unknown")]
-    CommissionFreeStatusUnknown,
-    /// None
-    #[c(remote = "None")]
-    CommissionFreeStatusNone,
-    /// Commission-free amount to be calculated
-    #[c(remote = "Calculated")]
-    CommissionFreeStatusCalculated,
-    /// Pending commission-free
-    #[c(remote = "Pending")]
-    CommissionFreeStatusPending,
-    /// Commission-free applied
-    #[c(remote = "Ready")]
-    CommissionFreeStatusReady,
-}
-
-/// Deduction status
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::DeductionStatus")]
-#[allow(clippy::enum_variant_names)]
-#[repr(C)]
-pub enum CDeductionStatus {
-    /// Unknown
-    #[c(remote = "Unknown")]
-    DeductionStatusUnknown,
-    /// Pending Settlement
-    #[c(remote = "None")]
-    DeductionStatusNone,
-    /// Commission-free amount to be calculated
-    #[c(remote = "NoData")]
-    DeductionStatusNoData,
-    /// Pending commission-free
-    #[c(remote = "Pending")]
-    DeductionStatusPending,
-    /// Commission-free applied
-    #[c(remote = "Done")]
-    DeductionStatusDone,
-}
-
-/// Charge category code
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CEnum)]
-#[c(remote = "longport::trade::ChargeCategoryCode")]
-#[allow(clippy::enum_variant_names)]
-#[repr(C)]
-pub enum CChargeCategoryCode {
-    /// Unknown
-    #[c(remote = "Unknown")]
-    ChargeCategoryCodeUnknown,
-    /// Broker
-    #[c(remote = "Broker")]
-    ChargeCategoryCodeBroker,
-    /// Third
-    #[c(remote = "Third")]
-    ChargeCategoryCodeThird,
 }

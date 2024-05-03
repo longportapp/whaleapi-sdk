@@ -1,21 +1,21 @@
 [package]
 edition = "2021"
-name = "longport-c"
-version = "1.0.23"
-description = "LongPort OpenAPI SDK for C"
-homepage = "https://open.longportapp.com/en/"
+name = "longportwhale-c"
+version = "1.0.0"
+description = "WhaleAPI SDK for C"
+homepage = "https://longbridgewhale.com/"
 readme = "README.md"
-repository = "https://github.com/longportapp/openapi-sdk"
+repository = "https://github.com/longportapp/whaleapi-sdk"
 license = "MIT OR Apache-2.0"
-keywords = ["longport", "openapi", "sdk"]
+keywords = ["longport", "whale", "openapi", "sdk"]
 categories = ["api-bindings"]
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-longport = { path = "../rust" }
-longport-c-macros = { path = "crates/macros" }
+longportwhale = { path = "../rust" }
+longportwhale-c-macros = { path = "crates/macros" }
 
 rust_decimal = { version = "1.23.1", features = ["maths"] }
 tokio = { version = "1.19.2", features = ["rt-multi-thread"] }

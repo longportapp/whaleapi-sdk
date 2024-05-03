@@ -16,10 +16,9 @@ set(SOURCES
     ../src/decimal.cpp
     ../src/status.cpp
     ../src/types.cpp
-    ../src/quote_context.cpp
     ../src/trade_context.cpp
 )
 add_library(
-    longport_cpp STATIC
+    longportwhale_cpp STATIC
     ${SOURCES}
 )

@@ -10,7 +10,7 @@
 
 typedef struct lb_config_t lb_config_t;
 
-namespace longport {
+namespace longportwhale {
 
 class Config
 {
@@ -29,18 +29,15 @@ public:
    * @param app_secret App secret
    * @param access_token Access token
    * @param http_url HTTP  endpoint url (Default:
-   * https://openapi.portbridgeapp.com)
-   * @param quote_ws_url Quote websocket endpoint url (Default:
-   * wss://openapi-quote.longportapp.com/v2)
+   * https://api.longbridgewhale.com)
    * @param trade_ws_url Trade websocket endpoint url (Default:
-   * wss://openapi-trade.longportapp.com/v2)
+   * wss://openapi-trade.longportapp.com)
    * @param language Language identifer (Default: Language::EN)
    */
   Config(const std::string& app_key,
          const std::string& app_secret,
          const std::string& access_token,
          const std::optional<std::string>& http_url,
-         const std::optional<std::string>& quote_ws_url,
          const std::optional<std::string>& trade_ws_url,
          const std::optional<Language>& language);
 
@@ -48,10 +45,6 @@ public:
 
   operator const lb_config_t*() const;
   static Status from_env(Config& config);
-
-  /// Gets a new `access_token`
-  void refresh_access_token(int64_t expired_at,
-                            AsyncCallback<void*, std::string> callback);
 };
 
-} // namespace longport
+} // namespace longportwhale

@@ -7,3 +7,5 @@ build
 examples/python/.venv
 python/pysrc/longportwhale/__pycache__
 python/pysrc/longportwhale/*.so
+nodejs/*.node
+**/node_modules
