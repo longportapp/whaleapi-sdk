@@ -3,7 +3,6 @@ use jni::{
     objects::{GlobalRef, JClass, JValue},
     JNIEnv,
 };
-
 use once_cell::sync::OnceCell;
 
 use crate::types::ClassLoader;
