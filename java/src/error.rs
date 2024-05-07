@@ -55,7 +55,7 @@ impl JniError {
 
         env.new_object(
             exception_cls,
-            "(Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String)V",
+            "(Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;)V",
             &[
                 JValue::from(&code),
                 JValue::from(&message),

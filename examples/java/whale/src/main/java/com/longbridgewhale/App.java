@@ -1,3 +1,6 @@
+package com.longbridgewhale;
+
+
 import com.longportwhale.*;
 import com.longportwhale.trade.PushOrderChanged;
 import com.longportwhale.trade.TopicType;
@@ -12,27 +15,28 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main
+public class App 
 {
-    final static Logger logger = LoggerFactory.getLogger(Main.class);
+    final static Logger logger = LoggerFactory.getLogger(App.class);
 
     static String testAccount = "L6VQEU00121996";
 
     public static void main( String[] args ) throws Exception
     {
-        logger.info("key: {}, secret: {}", System.getenv("LONGBRIDGE_APP_KEY"), System.getenv("LONGBRIDGE_APP_SECRET"));
+        logger.info("key: {}, secret: {}", System.getenv("LONGPORT_APP_KEY"), System.getenv("LONGPORT_APP_SECRET"));
 
 
         try (Config conf = Config.fromEnv(); TradeContext tctx = TradeContext.create(conf).get(); HttpClient cli = HttpClient.fromEnv()) {
             testTrade(tctx, cli);
             testAsset(cli);
-            testMember(cli);
+            // testMember(cli);
         }
     }
 
     private static void testMember(HttpClient cli) throws Exception 
     {
         HashMap<String, Object> registerReq = new HashMap<String, Object>();
+        // change open_id
         registerReq.put("open_id", "test_register");
         CompletableFuture<HashMap> registerF = cli.request(HashMap.class, "POST", "/v1/whaleapi/auth/open_id/register", registerReq);
         HashMap<String, Object> registerRes = registerF.get();
@@ -79,7 +83,7 @@ public class Main
         HashMap<String, String> orderDetailReq = new HashMap<String, String>();
         orderDetailReq.put("order_id", submitRes.get("order_id").toString());
         orderDetailReq.put("account_no", testAccount);
-        CompletableFuture<HashMap> orderDetailF = cli.request(HashMap.class, "GET", "/v1/whaleapi/trade/order?" + Main.mapToQueryString(orderDetailReq), null);
+        CompletableFuture<HashMap> orderDetailF = cli.request(HashMap.class, "GET", "/v1/whaleapi/trade/order?" + App.mapToQueryString(orderDetailReq), null);
         HashMap<String, Object> orderDetailRes = orderDetailF.get();
         logger.info("order detail: {}", orderDetailRes);
 
@@ -88,7 +92,7 @@ public class Main
         HashMap<String, String> todayOrdersReq = new HashMap<String, String>();
         todayOrdersReq.put("account_no", testAccount);
         logger.info("start calling get today orders");
-        CompletableFuture<HashMap> todayOrdersF = cli.request(HashMap.class, "GET", "/v1/whaleapi/trade/order/today?" + Main.mapToQueryString(todayOrdersReq), null);
+        CompletableFuture<HashMap> todayOrdersF = cli.request(HashMap.class, "GET", "/v1/whaleapi/trade/order/today?" + App.mapToQueryString(todayOrdersReq), null);
         HashMap<String, Object> todayOrdersRes = todayOrdersF.get();
         logger.info("today order response: {}", todayOrdersRes);
            
@@ -96,7 +100,7 @@ public class Main
         HashMap<String, String> historyOrderReq = new HashMap<String, String>();
         historyOrderReq.put("account_no", testAccount);
         logger.info("start calling get history orders");
-        CompletableFuture<HashMap> historyOrderF = cli.request(HashMap.class, "GET", "/v1/whaleapi/trade/order/history?" + Main.mapToQueryString(historyOrderReq), null);
+        CompletableFuture<HashMap> historyOrderF = cli.request(HashMap.class, "GET", "/v1/whaleapi/trade/order/history?" + App.mapToQueryString(historyOrderReq), null);
         HashMap<String, Object> historyOrderRes = historyOrderF.get();
         logger.info("history order response: {}", historyOrderRes);
     }
@@ -118,3 +122,4 @@ public class Main
         return queryString.toString();
     }
 }
+
