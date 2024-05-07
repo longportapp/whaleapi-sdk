@@ -29,13 +29,14 @@ public class App
         try (Config conf = Config.fromEnv(); TradeContext tctx = TradeContext.create(conf).get(); HttpClient cli = HttpClient.fromEnv()) {
             testTrade(tctx, cli);
             testAsset(cli);
-            testMember(cli);
+            // testMember(cli);
         }
     }
 
     private static void testMember(HttpClient cli) throws Exception 
     {
         HashMap<String, Object> registerReq = new HashMap<String, Object>();
+        // change open_id
         registerReq.put("open_id", "test_register");
         CompletableFuture<HashMap> registerF = cli.request(HashMap.class, "POST", "/v1/whaleapi/auth/open_id/register", registerReq);
         HashMap<String, Object> registerRes = registerF.get();

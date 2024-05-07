@@ -5,9 +5,10 @@ public class OpenApiException extends Exception {
     private String message;
     private String traceId;
 
-    public OpenApiException(Long code, String message) {
+    public OpenApiException(Long code, String message, String traceId) {
         this.code = code;
         this.message = message;
+        this.traceId = traceId;
     }
 
     public Long getCode() {
