@@ -17,7 +17,6 @@ pub(crate) static TIME_LOCALTIME_CLASS: OnceCell<GlobalRef> = OnceCell::new();
 pub(crate) static TIME_LOCALDATETIME_CLASS: OnceCell<GlobalRef> = OnceCell::new();
 pub(crate) static TIME_ZONE_ID: OnceCell<GlobalRef> = OnceCell::new();
 pub(crate) static TRADE_CONTEXT_CLASS: OnceCell<GlobalRef> = OnceCell::new();
-pub(crate) static DERIVATIVE_TYPE_CLASS: OnceCell<GlobalRef> = OnceCell::new();
 pub(crate) static OPENAPI_EXCEPTION_CLASS: OnceCell<GlobalRef> = OnceCell::new();
 
 fn init_timezone_id(env: &mut JNIEnv) {
@@ -65,14 +64,7 @@ pub extern "system" fn Java_com_longportwhale_SdkNative_init<'a>(
         (TIME_LOCALDATE_CLASS, "java/time/LocalDate"),
         (TIME_LOCALTIME_CLASS, "java/time/LocalTime"),
         (TIME_LOCALDATETIME_CLASS, "java/time/LocalDateTime"),
-        (
-            DERIVATIVE_TYPE_CLASS,
-            "com/longportwhale/quote/DerivativeType"
-        ),
-        (
-            OPENAPI_EXCEPTION_CLASS,
-            "com/longportwhale/OpenApiException"
-        ),
+        (OPENAPI_EXCEPTION_CLASS, "com/longportwhale/OpenApiException"),
         (TRADE_CONTEXT_CLASS, "com/longportwhale/trade/TradeContext")
     );
 
