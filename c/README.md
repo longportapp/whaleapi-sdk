@@ -1,10 +1,10 @@
-# LongPort OpenAPI SDK for C
+# WhaleAPI SDK for C
 
-`longportwhale` provides an easy-to-use interface for invokes [`LongPort Whale OpenAPI`](https://longbridgewhale.com/).
+`longportwhale` provides an easy-to-use interface for invokes `WhaleAPI`.
 
 ## Quickstart
 
-_Install LongPort OpenAPI SDK_
+_Install WhaleAPI SDK_
 
 [`Download C SDK`](https://github.com/longportapp/whaleapi-sdk/releases)
 

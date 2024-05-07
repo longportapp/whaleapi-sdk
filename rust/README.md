@@ -1,4 +1,4 @@
-# LongPort OpenAPI SDK for Rust
+# WhaleAPI SDK for Rust
 
 <div align="center">
   <a href="https://crates.io/crates/longport">
@@ -20,7 +20,8 @@
 </div>
 
 
-`LongportWhale` provides an easy-to-use interface for invokes [`LongPort Whale OpenAPI`]
+`longportwhale` provides an easy-to-use interface for invokes `WhaleAPI`]
+
 ## Quickstart
 
 _Add dependencies to `Cargo.toml`_
