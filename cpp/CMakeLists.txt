@@ -5,6 +5,7 @@ set(SOURCES
     src/decimal.cpp
     src/status.cpp
     src/trade_context.cpp
+    src/types.cpp
 )
 add_library(
     longportwhale_cpp SHARED

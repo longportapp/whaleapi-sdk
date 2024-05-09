@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use longportwhale_httpcli::HttpClientError;
 use longportwhale_wscli::WsClientError;
 
@@ -53,14 +51,6 @@ pub enum Error {
 }
 
 impl Error {
-    #[inline]
-    pub(crate) fn parse_field_error(name: &'static str, error: impl Display) -> Self {
-        Self::ParseField {
-            name,
-            error: error.to_string(),
-        }
-    }
-
     /// Consumes this error and returns a simple error
     pub fn into_simple_error(self) -> SimpleError {
         match self {

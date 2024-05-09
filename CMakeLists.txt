@@ -22,5 +22,5 @@ fetchcontent_makeavailable(Corrosion)
 add_subdirectory(c)
 add_subdirectory(cpp)
 
-add_subdirectory(examples/c/http_client)
-add_subdirectory(examples/cpp/http_client)
+add_subdirectory(examples/c/whale)
+add_subdirectory(examples/cpp/whale)

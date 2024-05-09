@@ -1,6 +1,7 @@
 #pragma once
 
 #include "async_result.hpp"
+#include "callback.hpp"
 #include "config.hpp"
 #include "push.hpp"
 #include "types.hpp"

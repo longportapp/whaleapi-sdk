@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace longport {
+namespace longportwhale {
 namespace utils {
 
 inline std::vector<const char*>
