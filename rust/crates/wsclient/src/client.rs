@@ -303,7 +303,10 @@ impl WsClient {
             .request(
                 COMMAND_CODE_AUTH,
                 Some(AUTH_TIMEOUT),
-                AuthRequest { token: otp.into() },
+                AuthRequest {
+                    token: otp.into(),
+                    metadata: Default::default(),
+                },
             )
             .await?;
         let expires_mills = resp.expires.saturating_sub(
@@ -332,6 +335,7 @@ impl WsClient {
                 Some(RECONNECT_TIMEOUT),
                 ReconnectRequest {
                     session_id: session_id.into(),
+                    metadata: Default::default(),
                 },
             )
             .await?;
