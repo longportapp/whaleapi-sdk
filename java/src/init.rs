@@ -64,7 +64,10 @@ pub extern "system" fn Java_com_longportwhale_SdkNative_init<'a>(
         (TIME_LOCALDATE_CLASS, "java/time/LocalDate"),
         (TIME_LOCALTIME_CLASS, "java/time/LocalTime"),
         (TIME_LOCALDATETIME_CLASS, "java/time/LocalDateTime"),
-        (OPENAPI_EXCEPTION_CLASS, "com/longportwhale/OpenApiException"),
+        (
+            OPENAPI_EXCEPTION_CLASS,
+            "com/longportwhale/OpenApiException"
+        ),
         (TRADE_CONTEXT_CLASS, "com/longportwhale/trade/TradeContext")
     );
 
