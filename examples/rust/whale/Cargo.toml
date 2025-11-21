@@ -1,10 +1,12 @@
 [package]
-name = "http_client"
+name = "whale"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 longportwhale = { path = "../../../rust" }
-serde = { version = "1.0.199", features = ["derive"] }
 tokio = { version = "1.19", features = ["rt-multi-thread", "macros"] }
-tracing-subscriber = { version = "0.3.18", features = ["fmt", "env-filter"] }
+tracing = "0.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+

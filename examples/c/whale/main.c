@@ -6,39 +6,25 @@
 #include <windows.h>
 #else
 #include <curses.h>
+#include <unistd.h>
 #endif
 
 const char* test_account = "L6VQEU00121996";
+volatile int is_finished = 0;
 
-// submit order example
+// Forward declarations
 void
 do_trade(lb_http_client_t*, lb_config_t*);
-
-// query asset example
-// void
-// query_asset(*lb_http_client_t* cli);
-
-// create user example
-// void
-// create_user(*lb_http_client_t* cli);
-
-// handle response
 void
 on_response(const struct lb_async_result_t*);
-
-// error handle
 void
-on_error(const struct lb_async_result_t*);
-
-// trade context created callback
+on_subscribe_complete(const struct lb_async_result_t*);
 void
 on_trade_context_created(const struct lb_async_result_t*);
-
 void
 on_order_event(const struct lb_trade_context_t*,
                const struct lb_push_order_changed_t*,
                void*);
-
 void
 print_decimal(const lb_decimal_t*);
 
@@ -67,9 +53,31 @@ main(int argc, char const* argv[])
     return -1;
   }
 
+  printf("Starting trade example...\n");
   do_trade(http_client, config);
 
-  getchar();
+  printf("Waiting for order event...\n");
+
+  // Wait up to 30 seconds for the process to complete
+  int timeout = 30;
+  while (!is_finished && timeout > 0) {
+#ifdef WIN32
+    Sleep(1000);
+#else
+    sleep(1);
+#endif
+    timeout--;
+    if (timeout % 5 == 0) {
+      printf("Waiting... %d seconds remaining\n", timeout);
+    }
+  }
+
+  if (!is_finished) {
+    printf("Timeout waiting for order event.\n");
+  } else {
+    printf("Order event received. Exiting.\n");
+  }
+
   lb_config_free(config);
   lb_http_client_free(http_client);
   return 0;
@@ -78,60 +86,86 @@ main(int argc, char const* argv[])
 void
 do_trade(lb_http_client_t* cli, lb_config_t* conf)
 {
-
-  lb_trade_context_new(conf, on_trade_context_created, NULL);
-  lb_http_header_t headers[] = { { "accept-language", "zh-CN" } };
-
-  char* body = "{"
-               "\"symbol\":\"700.HK\","
-               "\"order_type\":\"MO\","
-               "\"side\": \"Buy\","
-               "\"submitted_quantity\":\"100\","
-               "\"time_in_force\":\"Day\","
-               "\"account_no\":\"";
-
-  strcat(body, test_account);
-  strcat(body, "\"}");
-
-  lb_http_client_request(
-    cli, "post", "/v1/whaleapi/trade/order", headers, body, on_response, NULL);
+  printf("Creating trade context...\n");
+  // Pass http_client as userdata so callback can use it
+  lb_trade_context_new(conf, on_trade_context_created, cli);
 }
 
 void
 on_response(const struct lb_async_result_t* res)
 {
+  printf("on_response called!\n");
+  fflush(stdout);
   if (res->error) {
-    printf("failed: %s\n", lb_error_message(res->error));
+    printf("ERROR - Order submission failed: %s\n",
+           lb_error_message(res->error));
     return;
   }
 
   const lb_http_result_t* resp = (const lb_http_result_t*)res->data;
-  printf("%s\n", lb_http_result_response_body(resp));
+  printf("ORDER RESPONSE: %s\n", lb_http_result_response_body(resp));
 }
 
 void
-on_error(const struct lb_async_result_t* res)
+on_subscribe_complete(const struct lb_async_result_t* res)
 {
   if (res->error) {
-    printf("failed to subscribe topic: %s\n", lb_error_message(res->error));
+    printf("ERROR - Subscription failed: %s\n", lb_error_message(res->error));
     return;
   }
+
+  printf("Subscription complete! Now submitting order...\n");
+
+  // Get http_client from userdata
+  lb_http_client_t* cli = (lb_http_client_t*)res->userdata;
+  if (cli == NULL) {
+    printf("ERROR: http_client is NULL in on_subscribe_complete\n");
+    return;
+  }
+
+  lb_http_header_t headers[] = { { "accept-language", "zh-CN" },
+                                 { NULL, NULL } };
+
+  char body[512];
+  snprintf(body,
+           sizeof(body),
+           "{"
+           "\"symbol\":\"700.HK\","
+           "\"order_type\":\"MO\","
+           "\"side\":\"Buy\","
+           "\"submitted_quantity\":\"100\","
+           "\"time_in_force\":\"Day\","
+           "\"account_no\":\"%s\""
+           "}",
+           test_account);
+
+  printf("Sending order request...\n");
+  printf("Body: %s\n", body);
+  fflush(stdout);
+
+  lb_http_client_request(
+    cli, "POST", "/v1/whaleapi/trade/order", headers, body, on_response, NULL);
+  printf("Request sent.\n");
+  fflush(stdout);
 }
 
 void
 on_trade_context_created(const struct lb_async_result_t* res)
 {
   if (res->error) {
-    printf("failed to create trade context: %s\n",
+    printf("ERROR - TradeContext creation failed: %s\n",
            lb_error_message(res->error));
     return;
   }
 
-  *((const lb_trade_context_t**)res->userdata) = res->ctx;
+  printf("TradeContext created! Subscribing to order events...\n");
 
   const enum lb_topic_type_t topics[] = { TopicPrivate };
 
-  lb_trade_context_subscribe(res->ctx, topics, 1, NULL, NULL);
+  // Pass http_client from our userdata to subscribe callback
+  lb_http_client_t* cli = (lb_http_client_t*)res->userdata;
+
+  lb_trade_context_subscribe(res->ctx, topics, 1, on_subscribe_complete, cli);
   lb_trade_context_set_on_order_changed(res->ctx, on_order_event, NULL, NULL);
 }
 
@@ -140,56 +174,35 @@ on_order_event(const struct lb_trade_context_t* ctx,
                const struct lb_push_order_changed_t* order,
                void* user_data)
 {
+  printf("\n=== RECEIVED ORDER EVENT ===\n");
   if (order == NULL) {
-    printf("change event is NULL\n");
+    printf("Order event is NULL\n");
     return;
   }
 
-  printf("Order Side: %d\n", order->side);
-  printf("Stock Name: %s\n", order->stock_name);
-  printf("Submitted Quantity: %" PRId64 "\n", order->submitted_quantity);
-  printf("Symbol: %s\n", order->symbol);
-  printf("Order Type: %d\n", order->order_type);
-  printf("Submitted Price: ");
-  print_decimal(order->submitted_price);
-  printf("Executed Quantity: %" PRId64 "\n", order->executed_quantity);
-  printf("Executed Price: ");
-  print_decimal(order->executed_price);
   printf("Order ID: %s\n", order->order_id);
-  printf("Currency: %s\n", order->currency);
+  printf("Symbol: %s\n", order->symbol);
+  printf("Stock Name: %s\n", order->stock_name);
+  printf("Side: %d\n", order->side);
+  printf("Order Type: %d\n", order->order_type);
   printf("Order Status: %d\n", order->status);
-  printf("Submitted At: %" PRId64 "\n", order->submitted_at);
-  printf("Updated At: %" PRId64 "\n", order->updated_at);
-  printf("Trigger Price: ");
-  print_decimal(order->trigger_price);
-  printf("Message: %s\n", order->msg);
-  printf("Order Tag: %d\n", order->tag);
-  if (order->trigger_status) {
-    printf("Trigger Status: %d\n", *order->trigger_status);
-  }
-  if (order->trigger_at) {
-    printf("Trigger At: %" PRId64 "\n", *order->trigger_at);
-  }
-  printf("Trailing Amount: ");
-  print_decimal(order->trailing_amount);
-  printf("Trailing Percent: ");
-  print_decimal(order->trailing_percent);
-  printf("Limit Offset Amount: ");
-  print_decimal(order->limit_offset);
+  printf("Submitted Quantity: %" PRId64 "\n", order->submitted_quantity);
+  printf("Executed Quantity: %" PRId64 "\n", order->executed_quantity);
+  printf("Currency: %s\n", order->currency);
   printf("Account No: %s\n", order->account_no);
-  printf("Last Share: ");
-  print_decimal(order->last_share);
-  printf("Last Price: ");
-  print_decimal(order->last_price);
+  printf("Message: %s\n", order->msg);
   printf("Remark: %s\n", order->remark);
+  printf("============================\n\n");
+
+  is_finished = 1;
 }
 
 void
 print_decimal(const lb_decimal_t* decimal)
 {
   if (decimal) {
-    printf("Value: %f", lb_decimal_to_double(decimal));
+    printf("%f", lb_decimal_to_double(decimal));
   } else {
-    printf("NULL\n");
+    printf("NULL");
   }
 }

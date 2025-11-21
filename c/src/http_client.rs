@@ -112,6 +112,7 @@ pub unsafe extern "C" fn lb_http_client_request(
     };
     let mut r_headers = HashMap::new();
     if !headers.is_null() {
+        let mut headers = headers;
         while !(*headers).name.is_null() {
             let name = CStr::from_ptr((*headers).name)
                 .to_str()
@@ -122,6 +123,7 @@ pub unsafe extern "C" fn lb_http_client_request(
                 .expect("invalid header name")
                 .to_string();
             r_headers.insert(name, value);
+            headers = headers.add(1);
         }
     }
 

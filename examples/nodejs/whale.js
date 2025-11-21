@@ -1,81 +1,86 @@
-import {EventEmitter} from 'node:events';
-import qs from 'node:querystring';
-
-import {  Config, TradeContext, HttpClient, TopicType } from 'longportwhale';
+import { Config, TradeContext, HttpClient, TopicType } from 'longportwhale';
 import pino from 'pino';
 
 const logger = pino();
-const eventEmitter = new EventEmitter();
+
 const conf = Config.fromEnv();
 const httpcli = HttpClient.fromEnv();
-
-
 const test_account = "L6VQEU00121996";
 
-async function main() {
-    const tctx = await TradeContext.new(conf);
-    tctx.setOnOrderChanged(onOrder);
-    await tctx.subscribe([TopicType.Private]);
-    // createMember();
-    await doTrade();
-    await queryAsset();
-
-    eventEmitter.on('shutdown', () => {
-        process.exit();
-    });
-}
+let orderId = null;
+let completed = false;
 
 function onOrder(err, ev) {
-    if (!err) {
-        logger.info(`get order status changed event: ${ev}`);
-    } else {
-        logger.error(err)
+    if (err) {
+        logger.error(err);
+        return;
+    }
+
+    // Use toString() for logging (recommended workaround)
+    logger.info(`Received order event: ${ev.toString()}`);
+
+    // Access properties directly (recommended for production)
+    const eventOrderId = ev.orderId;
+    const eventSymbol = ev.symbol;
+    const eventStatus = ev.status;
+
+    logger.info(`Order details - ID: ${eventOrderId}, Symbol: ${eventSymbol}, Status: ${eventStatus}`);
+
+    // Check if it matches our order
+    if (orderId && eventOrderId === orderId) {
+        logger.info("✅ Received expected order event!");
+        completed = true;
     }
 }
 
-async function createMember() {
-    const req = {
-        "open_id": `whale_node_demo_${Date.now()}`
-    };
-    const headers = {
-        // set response language by accept-language header
-        'accept-language': "zh-CN" // zh-CN 中文简体，zh-HK - 繁体，en - english
-    }
-    const res = await httpcli.request('POST', '/v1/whaleapi/auth/open_id/register', headers, req);
-    logger.info(`create member response: ${JSON.stringify(res)}`);
-}
+async function main() {
+    logger.info("Starting verification...");
 
-async function queryAsset() {
-    const req = {
-        "account_no": test_account,
-        "currency": "HKD"
-    };
-    
-    const res = await httpcli.request('POST', '/v1/whaleapi/asset/detail_info', {}, req);
-    logger.info(`query user asset response: ${JSON.stringify(res)}`);
-}
+    const tctx = await TradeContext.new(conf);
+    tctx.setOnOrderChanged(onOrder);
 
-async function doTrade() {
+    logger.info("Subscribing to private events...");
+    await tctx.subscribe([TopicType.Private]);
+
+    // Wait for subscription
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Submit Order
     const req = {
         "symbol": "700.HK",
-        "order_type": "MO", // Market Order
+        "order_type": "MO",
         "side": "Buy",
         "submitted_quantity": "100",
         "time_in_force": "Day",
-        "account_no": test_account // Test Account Number
-    };
-
-    logger.info("start calling submit order");
-    const submitRes = await httpcli.request('POST', '/v1/whaleapi/trade/order', null, req);
-    logger.info(`submit order response: ${JSON.stringify(submitRes)}`);
-
-    // get order detail
-    const orderDetailReq = {
-        "order_id": submitRes.order_id,
         "account_no": test_account
     };
-    const orderDetailRes = await httpcli.request('GET', `/v1/whaleapi/trade/order?${qs.stringify(orderDetailReq)}`);
-    logger.info(`order detail: ${JSON.stringify(orderDetailRes)}`);
+
+    logger.info(`Submitting order: ${JSON.stringify(req)}`);
+    try {
+        const submitRes = await httpcli.request('POST', '/v1/whaleapi/trade/order', null, req);
+        logger.info(`Submit order response: ${JSON.stringify(submitRes)}`);
+        orderId = submitRes.order_id;
+    } catch (e) {
+        logger.error(`Failed to submit order: ${e}`);
+        process.exit(1);
+    }
+
+    // Wait for event
+    logger.info(`Waiting for order event for order_id: ${orderId}...`);
+    const startTime = Date.now();
+    while (!completed) {
+        if (Date.now() - startTime > 60000) {
+            logger.error("Timeout waiting for order event.");
+            process.exit(1);
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    logger.info("Verification successful!");
+    process.exit(0);
 }
 
-await main();
+main().catch(e => {
+    logger.error(e);
+    process.exit(1);
+});

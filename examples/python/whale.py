@@ -1,85 +1,88 @@
 import time
 import threading
-import urllib.parse
 import logging
+import os
+import sys
 from longportwhale.openapi import Config, HttpClient, TradeContext, PushOrderChanged, TopicType
 
-logger = logging.getLogger("whale")
-logging.basicConfig(level=logging.DEBUG)
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger("verify_trade")
 
-event = threading.Event()
-
-conf = Config.from_env()
-httpcli = HttpClient.from_env()
-tctx = TradeContext(conf)
-
-test_account = "L6VQEU00121996"
-
-def main():
-    tctx.set_on_order_changed(on_order)
-    tctx.subscribe([TopicType.Private])
-    # create_member()
-    do_trade()
-    query_asset()
-
-    while not event.is_set():
-        time.sleep(1)
-
+# Event to signal completion
+completion_event = threading.Event()
+order_id = None
 
 def on_order(order_ev: PushOrderChanged):
-    logger.info("get order status changed event: {}".format(order_ev))
+    global order_id
+    logger.info(f"Received order event: {order_ev}")
+    if order_id and order_ev.order_id == order_id:
+        logger.info("Received expected order event!")
+        completion_event.set()
 
+def main():
+    global order_id
+    
+    logger.info("Starting verification...")
 
-def create_member():
-    req = {
-        # open id is your system member uniq id
-        # we will binding open id to longport system member id
-        "open_id": f"whale_python_demo_{time.time()}"
-    }
-    res = httpcli.request(method="POST", path="/v1/whaleapi/auth/open_id/register", body=req, headers = {
-        # can set language by accept-language header
-        "Accept-Language": "zh-CN"
-    })
-    logger.info("create member response: {}".format(res))
+    # Load config
+    try:
+        conf = Config.from_env()
+        httpcli = HttpClient.from_env()
+    except Exception as e:
+        logger.error(f"Failed to load config: {e}")
+        sys.exit(1)
 
-def query_asset():
-    req = {
-        "account_no": test_account,
-        "currency": "HKD"
-    }
-    res = httpcli.request(method="POST", path="/v1/whaleapi/asset/detail_info", body=req, headers = {
-        "Accept-Language": "zh-HK"
-    })
-    logger.info("query user asset response: {}".format(res))
+    # Initialize TradeContext
+    tctx = TradeContext(conf)
+    tctx.set_on_order_changed(on_order)
+    
+    # Subscribe
+    logger.info("Subscribing to private events...")
+    tctx.subscribe([TopicType.Private])
+    time.sleep(2) # Wait for subscription
 
+    # Test HTTP connection
+    logger.info("Testing HTTP connection...")
+    try:
+        asset_req = {
+            "account_no": test_account,
+            "currency": "HKD"
+        }
+        asset_res = httpcli.request(method="POST", path="/v1/whaleapi/asset/detail_info", body=asset_req, headers={})
+        logger.info(f"Asset query response: {asset_res}")
+    except Exception as e:
+        logger.error(f"Failed to query asset: {e}")
+        # Continue to submit order to see if it persists
 
-def do_trade():
+    # Submit Order
+    test_account = "L6VQEU00121996"
     req = {
         "symbol": "700.HK",
-        "order_type": "MO",  # Market Order
+        "order_type": "MO",
         "side": "Buy",
         "submitted_quantity": "100",
         "time_in_force": "Day",
-        "account_no": test_account  # Test Account Number
-    }
-
-    logger.info("start calling submit order")
-    submit_res = httpcli.request(method="POST", path="/v1/whaleapi/trade/order", body=req, headers = {})
-    logger.info("submit order response: {}".format(submit_res))
-
-    # get order detail
-    order_detail_req = {
-        "order_id": submit_res["order_id"],
         "account_no": test_account
     }
-    # query params should do url encode
-    req_qs = urllib.parse.urlencode(order_detail_req)
-    order_detail_res = httpcli.request(method="GET", path="/v1/whaleapi/trade/order?" + req_qs, headers = {
-        "Accept-Language": "zh-CN"
-    })
-    logger.info("order detail: {}".format(order_detail_res))
 
+    logger.info(f"Submitting order: {req}")
+    try:
+        submit_res = httpcli.request(method="POST", path="/v1/whaleapi/trade/order", body=req, headers={})
+        logger.info(f"Submit order response: {submit_res}")
+        order_id = submit_res["order_id"]
+    except Exception as e:
+        logger.error(f"Failed to submit order: {e}")
+        sys.exit(1)
 
-main()
+    # Wait for event
+    logger.info(f"Waiting for order event for order_id: {order_id}...")
+    if completion_event.wait(timeout=60):
+        logger.info("Verification successful!")
+        sys.exit(0)
+    else:
+        logger.error("Timeout waiting for order event.")
+        sys.exit(1)
 
-event.wait()
+if __name__ == "__main__":
+    main()

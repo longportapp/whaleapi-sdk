@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "longportwhale": "^1.0.0",
+    "longportwhale": "file:./../../nodejs",
     "pino": "^9.0.0"
   }
 }
