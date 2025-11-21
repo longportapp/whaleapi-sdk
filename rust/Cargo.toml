@@ -7,7 +7,7 @@ homepage = "https://longbridgewhale.com/"
 readme = "README.md"
 repository = "https://github.com/longportapp/whaleapi-sdk"
 license = "MIT OR Apache-2.0"
-keywords = ["longport", "whale", "openapi", "sdk"]
+keywords = ["longport", "whaleapi", "sdk"]
 categories = ["api-bindings"]
 
 [features]
@@ -17,7 +17,6 @@ blocking = ["flume"]
 longportwhale-wscli = { path = "crates/wsclient", version = "1.0.0" }
 longportwhale-httpcli = { path = "crates/httpclient", version = "1.0.0" }
 longport-proto = { version = "1.0.23" }
-longport-candlesticks = { version = "1.0.23" }
 
 tokio = { version = "1.18.2", features = [
   "time",
