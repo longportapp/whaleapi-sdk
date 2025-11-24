@@ -23,11 +23,10 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          import:
+          inventories:
             - https://docs.python.org/3/objects.inv
-          selection:
+          options:
             docstring_style: google
-          rendering:
             show_source: false
             show_if_no_docstring: true
             members_order: source
