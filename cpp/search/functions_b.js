@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['operator_20bool_0',['operator bool',['../classlongportwhale_1_1_status.html#a87ddb35097a73e691ed2551bba4bb08c',1,'longportwhale::Status::operator bool()'],['../structlongportwhale_1_1_async_result.html#a4803387e6175d2f4e394afcda87185ba',1,'longportwhale::AsyncResult::operator bool()']]],
+  ['operator_20const_20lb_5fconfig_5ft_20_2a_1',['operator const lb_config_t *',['../classlongportwhale_1_1_config.html#a86317bcdad6159b273c62211f4f3a3d0',1,'longportwhale::Config']]],
+  ['operator_20const_20lb_5fdecimal_5ft_20_2a_2',['operator const lb_decimal_t *',['../classlongportwhale_1_1_decimal.html#adc4631dbed3a930db35bf2873aa0b9fe',1,'longportwhale::Decimal']]],
+  ['operator_20double_3',['operator double',['../classlongportwhale_1_1_decimal.html#af65ba414c5f5ce66bbffea609f0f01f3',1,'longportwhale::Decimal']]],
+  ['operator_20lb_5fdecimal_5ft_20_2a_4',['operator lb_decimal_t *',['../classlongportwhale_1_1_decimal.html#a04811903515c8fb82bed9d34121d6d18',1,'longportwhale::Decimal']]],
+  ['operator_25_5',['operator%',['../classlongportwhale_1_1_decimal.html#a739fdf4957478f1a7e28de552de59e82',1,'longportwhale::Decimal']]],
+  ['operator_25_3d_6',['operator%=',['../classlongportwhale_1_1_decimal.html#adaf0c3d5487a22cd3013267761946a8a',1,'longportwhale::Decimal']]],
+  ['operator_2a_7',['operator*',['../classlongportwhale_1_1_decimal.html#ae07cb31472fa0c6c9ffe10e82afbc86b',1,'longportwhale::Decimal']]],
+  ['operator_2a_3d_8',['operator*=',['../classlongportwhale_1_1_decimal.html#af60c1bf75bc4a6d560f48067f9adc78c',1,'longportwhale::Decimal']]],
+  ['operator_2b_9',['operator+',['../classlongportwhale_1_1_decimal.html#ad52af74bd64c1f3a6cd28f2bf8ddb92b',1,'longportwhale::Decimal']]],
+  ['operator_2b_3d_10',['operator+=',['../classlongportwhale_1_1_decimal.html#a0a90e06cc097d73633f05dd15e592c24',1,'longportwhale::Decimal']]],
+  ['operator_2d_11',['operator-',['../classlongportwhale_1_1_decimal.html#a0a07d75b213691091951094b07958146',1,'longportwhale::Decimal::operator-(const Decimal &amp;other) const'],['../classlongportwhale_1_1_decimal.html#a439b490908cbd5214543896a6a307d2d',1,'longportwhale::Decimal::operator-() const']]],
+  ['operator_2d_3d_12',['operator-=',['../classlongportwhale_1_1_decimal.html#ab2e2540eea344ca45b6952224b0b48b7',1,'longportwhale::Decimal']]],
+  ['operator_2d_3e_13',['operator-&gt;',['../structlongportwhale_1_1_async_result.html#a521995517bf0e2cc94eaade4db095c51',1,'longportwhale::AsyncResult::operator-&gt;()'],['../structlongportwhale_1_1_push_event.html#aa51c8605bbef58e404f61d3ca0528fe0',1,'longportwhale::PushEvent::operator-&gt;()']]],
+  ['operator_2f_14',['operator/',['../classlongportwhale_1_1_decimal.html#ae7671e7a93ac88596f9382cce8c6f7b5',1,'longportwhale::Decimal']]],
+  ['operator_2f_3d_15',['operator/=',['../classlongportwhale_1_1_decimal.html#a3f5a38d4142d5cd2e956c1c471a250fb',1,'longportwhale::Decimal']]],
+  ['operator_3c_16',['operator&lt;',['../classlongportwhale_1_1_decimal.html#a34d1889bfa20f75c33f359437351d949',1,'longportwhale::Decimal']]],
+  ['operator_3c_3d_17',['operator&lt;=',['../classlongportwhale_1_1_decimal.html#ab6f05c8592ed6e3b4a76848c6ec3042b',1,'longportwhale::Decimal']]],
+  ['operator_3d_18',['operator=',['../classlongportwhale_1_1trade_1_1_trade_context.html#a5171fb533dcd0e94a6d297e9c8dfb099',1,'longportwhale::trade::TradeContext']]],
+  ['operator_3d_3d_19',['operator==',['../classlongportwhale_1_1_decimal.html#a6fa259c71645b2307746d91bf540c990',1,'longportwhale::Decimal']]],
+  ['operator_3e_20',['operator&gt;',['../classlongportwhale_1_1_decimal.html#a03174bfc42add8b28e01b1a7e080843b',1,'longportwhale::Decimal']]],
+  ['operator_3e_3d_21',['operator&gt;=',['../classlongportwhale_1_1_decimal.html#ae70c57f193f97cf161ea63b93ced8cb8',1,'longportwhale::Decimal']]]
+];
