@@ -234,6 +234,11 @@ jobs:
 
       - name: Build with cmake
         run: |
+          which rustc
+          rustc --version
+          export Rust_COMPILER=$(which rustc)
+          export Rust_CARGO=$(which cargo)
+          echo "Rust_COMPILER=$Rust_COMPILER"
           cargo make cmake
           cargo make c
           cargo make cpp
