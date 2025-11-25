@@ -241,6 +241,7 @@ jobs:
           mkdir -p cmake.build
           cd cmake.build
           cmake -DRust_COMPILER=$Rust_COMPILER -DRust_CARGO=$Rust_CARGO ../
+          make help
           cd ..
           cargo make c
           cargo make cpp
