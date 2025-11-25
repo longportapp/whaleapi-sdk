@@ -233,7 +233,9 @@ jobs:
       - name: Check with clippy
         run: cargo clippy -p longportwhale-c --all-features
 
-      - name: Build with cmake
+
+      - name: Build with cmake (Unix)
+        if: runner.os != 'Windows'
         run: |
           export Rust_COMPILER=$(rustup which rustc)
           export Rust_CARGO=$(rustup which cargo)
@@ -241,6 +243,19 @@ jobs:
           mkdir -p cmake.build
           cd cmake.build
           cmake -DRust_COMPILER=$Rust_COMPILER -DRust_CARGO=$Rust_CARGO ../
+          cd ..
+          cargo make c
+          cargo make cpp
+
+      - name: Build with cmake (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          $env:Rust_COMPILER = $(rustup which rustc)
+          $env:Rust_CARGO = $(rustup which cargo)
+          Write-Host "Real Rust_COMPILER=$env:Rust_COMPILER"
+          New-Item -ItemType Directory -Force -Path cmake.build | Out-Null
+          cd cmake.build
+          cmake -DRust_COMPILER="$env:Rust_COMPILER" -DRust_CARGO="$env:Rust_CARGO" ../
           cd ..
           cargo make c
           cargo make cpp
