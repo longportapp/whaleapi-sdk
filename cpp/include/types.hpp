@@ -1,6 +1,7 @@
 #pragma once
 
 #include "decimal.hpp"
+#include <cstdint>
 #include <optional>
 
 namespace longportwhale {
