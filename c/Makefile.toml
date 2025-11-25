@@ -1,21 +1,21 @@
 [tasks.c]
 command = "make"
-args = ["longportwhale_c"]
+args = ["cargo-build_longportwhale_c"]
 cwd = "cmake.build"
 
 [tasks.c-release]
 command = "make"
-args = ["longportwhale_c"]
+args = ["cargo-build_longportwhale_c"]
 cwd = "cmake.build"
 
 [tasks.c.windows]
 command = "msbuild"
-args = ["longportwhale.sln", "-p:Configuration=Debug", "/t:longportwhale_c"]
+args = ["longportwhale.sln", "-p:Configuration=Debug", "/t:cargo-build_longportwhale_c"]
 cwd = "cmake.build"
 
 [tasks.c-release.windows]
 command = "msbuild"
-args = ["longportwhale.sln", "-p:Configuration=Release", "/t:longportwhale_c"]
+args = ["longportwhale.sln", "-p:Configuration=Release", "/t:cargo-build_longportwhale_c"]
 cwd = "cmake.build"
 
 [tasks.c-test]
