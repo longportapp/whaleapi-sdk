@@ -25,5 +25,5 @@ cwd = "cmake.build"
 
 [tasks.c-test.windows]
 command = "msbuild"
-args = ["longport.sln", "-p:Configuration=Debug", "/t:test-c"]
+args = ["longportwhale.sln", "-p:Configuration=Debug", "/t:test-c"]
 cwd = "cmake.build"
