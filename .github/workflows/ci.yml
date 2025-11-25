@@ -235,10 +235,9 @@ jobs:
 
       - name: Build with cmake
         run: |
-          which rustc
-          rustc --version
-          export Rust_COMPILER=$(which rustc)
-          export Rust_CARGO=$(which cargo)
+          export Rust_COMPILER=$(rustup which rustc)
+          export Rust_CARGO=$(rustup which cargo)
+          echo "Real Rust_COMPILER=$Rust_COMPILER"
           mkdir -p cmake.build
           cd cmake.build
           cmake -DRust_COMPILER=$Rust_COMPILER -DRust_CARGO=$Rust_CARGO ../
