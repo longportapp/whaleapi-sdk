@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - fix-ci-cpp-build
   pull_request: {}
 
 jobs:
