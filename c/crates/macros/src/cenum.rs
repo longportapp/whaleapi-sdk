@@ -16,6 +16,7 @@ struct EnumItem {
     fields: Fields<Ignored>,
 
     #[darling(default)]
+    remote.unwrap_or_default())]
     remote: Option<Ident>,
 }
 
@@ -27,8 +28,10 @@ struct EnumArgs {
 
     remote: TypePath,
     #[darling(default)]
+    from.unwrap_or_default())]
     from: Option<bool>,
     #[darling(default)]
+    into.unwrap_or_default())]
     into: Option<bool>,
 }
 
