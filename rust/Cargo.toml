@@ -2,12 +2,12 @@
 edition = "2021"
 name = "longportwhale"
 version = "1.0.0"
-description = "LongPort Whale OpenAPI SDK for Rust"
+description = "Longbridge WhaleAPI SDK for Rust"
 homepage = "https://longbridgewhale.com/"
 readme = "README.md"
 repository = "https://github.com/longportapp/whaleapi-sdk"
 license = "MIT OR Apache-2.0"
-keywords = ["longport", "whaleapi", "sdk"]
+keywords = ["longbridge", "whaleapi", "sdk"]
 categories = ["api-bindings"]
 
 [features]
