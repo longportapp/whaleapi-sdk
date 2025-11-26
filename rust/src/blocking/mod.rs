@@ -1,4 +1,4 @@
-//! LongPort OpenAPI SDK blocking API
+//! WhaleAPI SDK blocking API
 
 mod error;
 mod runtime;

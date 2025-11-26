@@ -4,7 +4,7 @@
 
 ## Quickstart
 
-_Install LongPort OpenAPI SDK_
+_Install WhaleAPI SDK_
 
 Add `io.github.longportapp:whaleapi-sdk` to `pom.xml`
 

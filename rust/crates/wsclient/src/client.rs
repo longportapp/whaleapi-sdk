@@ -253,7 +253,7 @@ impl WsSession {
     }
 }
 
-/// LongPort Websocket client
+/// WhaleAPI Websocket client
 #[derive(Clone)]
 pub struct WsClient {
     command_tx: mpsc::UnboundedSender<Command>,

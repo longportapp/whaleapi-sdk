@@ -64,4 +64,4 @@ Status::message() const
   return err_ ? lb_error_message(err_) : "no error";
 }
 
-} // namespace longport
+} // namespace longportwhale

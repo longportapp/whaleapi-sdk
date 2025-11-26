@@ -1,7 +1,7 @@
 use longportwhale_httpcli::HttpClientError;
 use longportwhale_wscli::WsClientError;
 
-/// LongPort OpenAPI SDK error type
+/// WhaleAPI SDK error type
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// Decode Protobuf error
@@ -84,7 +84,7 @@ impl Error {
     }
 }
 
-/// LongPort OpenAPI SDK result type
+/// WhaleAPI SDK result type
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// Simple error type
