@@ -276,46 +276,22 @@ jobs:
       fail-fast: true
       matrix:
         settings:
-          - host: ubuntu-22.04
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              rustup install 1.89.0
-              rustup default 1.89.0
-              yarn build:debug
-              strip -x *.node
-
-          - host: ubuntu-22.04
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
-            build: |
-              rustup install 1.89.0
-              rustup default 1.89.0
-              rustup target add aarch64-unknown-linux-gnu
-              yarn build:debug --target aarch64-unknown-linux-gnu
-              aarch64-unknown-linux-gnu-strip *.node
-
-          - host: macos-13
+          - host: macos-latest
             architecture: x64
             build: |
-              rustup install 1.89.0
-              rustup default 1.89.0
-              yarn build:debug
+              npm run build
               strip -x *.node
 
           - host: windows-latest
-            build: |
-              rustup install 1.89.0
-              rustup default 1.89.0
-              yarn build:debug
+            build: npm run build
             architecture: x64
 
-          - host: ubuntu-22.04
+          - host: ubuntu-latest
             build: |
-              rustup install 1.89.0
-              rustup default 1.89.0
-              yarn build:debug
+              npm run build
               strip *.node
 
-          - host: macos-13
+          - host: macos-latest
             target: aarch64-apple-darwin
             build: |
               sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
@@ -323,10 +299,7 @@ jobs:
               export CXX=$(xcrun -f clang++);
               SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
               export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
-              rustup install 1.89.0
-              rustup default 1.89.0
-              rustup target add aarch64-apple-darwin
-              yarn build:debug --target aarch64-apple-darwin
+              yarn build --target aarch64-apple-darwin
               strip -x *.node
 
     runs-on: ${{ matrix.settings.host }}
@@ -337,7 +310,6 @@ jobs:
 
       - name: Setup node
         uses: actions/setup-node@v4
-        if: ${{ !matrix.settings.docker }}
         with:
           node-version: 20
           check-latest: true
@@ -345,43 +317,25 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        if: ${{ !matrix.settings.docker }}
         with:
           toolchain: stable
+          override: true
           components: rustfmt, clippy
           targets: ${{ matrix.settings.target }}
 
       - name: Check with clippy
         run: cargo clippy -p longportwhale-nodejs --all-features
 
-      - name: Install dependencies
-        working-directory: nodejs
-        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+      - name: Test
+        run: cargo test -p longportwhale-nodejs --all-features
+
+      - name: Install napi-rs/cli
+        run: npm install -g @napi-rs/cli
 
       - name: Build
-        if: ${{ !matrix.settings.docker }}
         working-directory: nodejs
         run: ${{ matrix.settings.build }}
 
-      - name: Build in Docker
-        uses: addnab/docker-run-action@v3
-        if: ${{ matrix.settings.docker }}
-        with:
-          image: ${{ matrix.settings.docker }}
-          options: "--user 0:0 -v ${{ github.workspace }}:/build -w /build/nodejs"
-          run: ${{ matrix.settings.build }}
-
-      - name: Move artifacts
-        run: |
-          mkdir -p artifacts
-          mv longportwhale.*.node artifacts/
-          yarn artifacts
-        working-directory: nodejs
-
-      - name: List packages
-        run: ls -R ./npm
-        shell: bash
-        working-directory: nodejs
 
   check-java-sdk:
     needs:
