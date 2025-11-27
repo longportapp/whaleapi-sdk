@@ -308,13 +308,6 @@ jobs:
               yarn build:debug
             architecture: x64
 
-          - host: ubuntu-22.04
-            build: |
-              rustup install 1.89.0
-              rustup default 1.89.0
-              yarn build:debug
-              strip *.node
-
           - host: macos-13
             target: aarch64-apple-darwin
             build: |
