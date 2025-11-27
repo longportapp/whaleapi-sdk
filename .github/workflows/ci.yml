@@ -446,6 +446,8 @@ jobs:
 
       - name: Build with cmake
         run: |
+          echo $PATH
+          echo $GITHUB_PATH
           cargo make cmake
           cargo make c
           cargo make cpp
