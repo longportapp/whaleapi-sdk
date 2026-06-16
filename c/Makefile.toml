@@ -1,29 +1,16 @@
+# Build via `cmake --build` so the same tasks work across every generator
+# (Unix Makefiles on Linux/macOS, Visual Studio on Windows). The build
+# directory is passed explicitly, and `--config` is honored by multi-config
+# generators and ignored by single-config ones.
+
 [tasks.c]
-command = "make"
-args = ["cargo-build_longportwhale_c"]
-cwd = "cmake.build"
+command = "cmake"
+args = ["--build", "cmake.build", "--config", "Debug", "--target", "cargo-build_longportwhale_c"]
 
 [tasks.c-release]
-command = "make"
-args = ["cargo-build_longportwhale_c"]
-cwd = "cmake.build"
-
-[tasks.c.windows]
-command = "msbuild"
-args = ["longportwhale.sln", "-p:Configuration=Debug", "/t:cargo-build_longportwhale_c"]
-cwd = "cmake.build"
-
-[tasks.c-release.windows]
-command = "msbuild"
-args = ["longportwhale.sln", "-p:Configuration=Release", "/t:cargo-build_longportwhale_c"]
-cwd = "cmake.build"
+command = "cmake"
+args = ["--build", "cmake.build", "--config", "Release", "--target", "cargo-build_longportwhale_c"]
 
 [tasks.c-test]
-command = "make"
-args = ["test-c"]
-cwd = "cmake.build"
-
-[tasks.c-test.windows]
-command = "msbuild"
-args = ["longportwhale.sln", "-p:Configuration=Debug", "/t:test-c"]
-cwd = "cmake.build"
+command = "cmake"
+args = ["--build", "cmake.build", "--config", "Debug", "--target", "test-c"]
