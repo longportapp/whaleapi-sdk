@@ -29,10 +29,10 @@ jobs:
             universal2: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python.version }}
           architecture: x64
@@ -58,7 +58,7 @@ jobs:
         run: |
           pip install longportwhale --no-index --find-links dist --force-reinstall
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: wheels-macos-${{ matrix.python.version }}
           path: dist
@@ -73,10 +73,10 @@ jobs:
         target: [x64, x86]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.target }}
@@ -94,7 +94,7 @@ jobs:
           pip install longportwhale --no-index --find-links dist --force-reinstall
           python -c "import longportwhale"
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: wheels-windows-${{ matrix.target }}-${{ matrix.python-version }}
           path: dist
@@ -109,10 +109,10 @@ jobs:
         target: [x86_64, i686]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Build wheels
@@ -127,7 +127,7 @@ jobs:
           pip install longportwhale --no-index --find-links dist --force-reinstall
           python -c "import longportwhale"
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: wheels-linux-${{ matrix.target }}-${{ matrix.python-version }}
           path: dist
@@ -142,7 +142,7 @@ jobs:
         target: [aarch64]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
       - name: Build wheels
@@ -174,7 +174,7 @@ jobs:
             venv/bin/pip install longportwhale --no-index --find-links /artifacts --force-reinstall
             venv/bin/python -c 'import longportwhale'
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: wheels-linux-${{ matrix.target }}-${{ matrix.python-version }}
           path: dist
@@ -253,12 +253,12 @@ jobs:
 
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         if: ${{ !matrix.settings.docker }}
         with:
           node-version: 20
@@ -291,7 +291,7 @@ jobs:
           run: ${{ matrix.settings.build }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: bindings-${{ matrix.settings.artifact-name }}
           path: nodejs/longportwhale.*.node
@@ -324,7 +324,7 @@ jobs:
             target: aarch64-apple-darwin
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
@@ -343,7 +343,7 @@ jobs:
 
       - name: Install latest cross binary
         if: ${{ matrix.settings.cross }}
-        uses: st3iny/install-cross-binary@v3
+        uses: st3iny/install-cross-binary@v4
 
       - name: Build with Cross
         if: ${{ matrix.settings.cross }}
@@ -352,7 +352,7 @@ jobs:
           mv target/${{ matrix.settings.target }}/release/${{ matrix.settings.lib_prefix }}longportwhale_java${{ matrix.settings.lib_suffix }} longportwhale_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: jnis-${{ matrix.settings.target }}
           path: longportwhale_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
@@ -360,18 +360,18 @@ jobs:
   copy-cpp-headers:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: include-c
           path: c/csrc/include
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: include-cpp
           path: cpp/include
@@ -400,13 +400,13 @@ jobs:
             dylib_ext: dylib
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Install MSBuild
         if: ${{ matrix.settings.host == 'windows-latest' }}
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v3
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -451,7 +451,7 @@ jobs:
           cp cmake.build/liblongportwhale_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: libs-debug-${{ matrix.settings.target }}
           path: dist/lib
@@ -480,13 +480,13 @@ jobs:
             dylib_ext: dylib
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Install MSBuild
         if: ${{ matrix.settings.host == 'windows-latest' }}
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v3
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -531,7 +531,7 @@ jobs:
           cp cmake.build/liblongportwhale_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: libs-release-${{ matrix.settings.target }}
           path: dist/lib
@@ -570,7 +570,7 @@ jobs:
             path: rust
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
       - uses: dtolnay/rust-toolchain@stable
@@ -602,17 +602,17 @@ jobs:
       - build
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download includes
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           path: ./sdk/libs
           pattern: libs-*
           merge-multiple: true
 
       - name: Download includes
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           path: ./sdk/include
           pattern: include-*
@@ -648,12 +648,12 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v7
         with:
           path: dist
           pattern: wheels-*
           merge-multiple: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.7
       - name: Publish to PyPi
@@ -664,18 +664,18 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Update versions
         run: node ./.github/misc/update_jssdk_version.mjs $(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml)
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 20
           check-latest: true
       - name: Install napi-rs/cli
         run: npm install -g @napi-rs/cli
       - name: Download all artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           path: ./nodejs/artifacts
           pattern: bindings-*
@@ -699,18 +699,18 @@ jobs:
     runs-on: ubuntu-22.04
     needs: build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Install JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: "8"
           distribution: "temurin"
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           path: ./java/jnis
           pattern: jnis-*
