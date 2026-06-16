@@ -1,4 +1,4 @@
-//! LongPort OpenAPI HTTP client
+//! WhaleAPIHTTP client
 
 #![forbid(unsafe_code)]
 #![deny(unreachable_pub)]

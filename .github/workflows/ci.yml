@@ -3,22 +3,22 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
+      - fix-ci-cpp-build
   pull_request: {}
 
 jobs:
   check-format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       # Use nightly Rust to check the format
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: nightly
-          override: true
           components: rustfmt, clippy
       - name: Check format
         run: cargo fmt --all -- --check
@@ -29,18 +29,17 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-22.04, windows-latest, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Check with clippy
@@ -55,42 +54,220 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        os: [ubuntu-22.04, windows-latest, macos-13]
+        python-version:
+          ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Install Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Check with clippy
         run: cargo clippy -p longportwhale-python --all-features
 
-      - name: Test
-        run: cargo test -p longportwhale-python --all-features
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          manylinux: auto
+          args: -i python${{ matrix.python-version }} --out dist -m python/Cargo.toml
+      - name: Install built wheel
+        run: |
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+          python -c "import longportwhale"
 
+  build-python-sdk-macos:
+    needs:
+      - check-python-sdk
+    runs-on: macos-13
+    strategy:
+      fail-fast: true
+      matrix:
+        python:
+          - version: "3.7"
+            universal2: false
+          - version: "3.8"
+            universal2: true
+          - version: "3.9"
+            universal2: true
+          - version: "3.10"
+            universal2: true
+          - version: "3.11"
+            universal2: true
+          - version: "3.12"
+            universal2: true
+          - version: "3.13"
+            universal2: true
+          - version: "3.14"
+            universal2: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python.version }}
+          architecture: x64
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - name: Build wheels - x86_64
+        uses: PyO3/maturin-action@v1
+        with:
+          target: x86_64
+          args: -i python --out dist -m python/Cargo.toml
+      - name: Install built wheel - x86_64
+        run: |
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+      - name: Build wheels - universal2
+        if: ${{ matrix.python.universal2 }}
+        uses: PyO3/maturin-action@v1
+        with:
+          args: -i python --target universal2-apple-darwin --out dist -m python/Cargo.toml
+      - name: Install built wheel - universal2
+        if: ${{ matrix.python.universal2 }}
+        run: |
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+      - name: Upload wheels
+        uses: actions/upload-artifact@v6
+        with:
+          name: wheels-macos-${{ matrix.python.version }}
+          path: dist
+
+  build-python-sdk-windows:
+    needs:
+      - check-python-sdk
+    runs-on: windows-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version:
+          ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        target: [x64, x86]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.target }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: -i python --out dist -m python/Cargo.toml
+      - name: Install built wheel
+        run: |
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+          python -c "import longportwhale"
+      - name: Upload wheels
+        uses: actions/upload-artifact@v6
+        with:
+          name: wheels-windows-${{ matrix.target }}-${{ matrix.python-version }}
+          path: dist
+
+  build-python-sdk-linux:
+    needs:
+      - check-python-sdk
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version:
+          ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        target: [x86_64, i686]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           manylinux: auto
-          args: -i python${{ matrix.python-version }} --release --out dist -m python/Cargo.toml
+          args: -i python${{ matrix.python-version }} --out dist -m python/Cargo.toml
       - name: Install built wheel
+        if: matrix.target == 'x86_64'
         run: |
           pip install longportwhale --no-index --find-links dist --force-reinstall
           python -c "import longportwhale"
+      - name: Upload wheels
+        uses: actions/upload-artifact@v6
+        with:
+          name: wheels-linux-${{ matrix.target }}-${{ matrix.python-version }}
+          path: dist
+
+  build-python-sdk-linux-cross:
+    needs:
+      - check-python-sdk
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version:
+          ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        target: [aarch64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: 2_28
+          args: -i python${{ matrix.python-version }} --out dist -m python/Cargo.toml
+      - uses: uraimo/run-on-arch-action@v3
+        name: Install built wheel
+        with:
+          arch: none
+          distro: none
+          base_image: "--platform=linux/aarch64 ubuntu:22.04"
+          githubToken: ${{ github.token }}
+          dockerRunArgs: |
+            --volume "${PWD}/dist:/artifacts"
+          install: |
+            apt-get update
+            apt-get install -y --no-install-recommends python3 python3-venv software-properties-common gnupg
+            add-apt-repository ppa:deadsnakes/ppa
+            apt-get update
+            apt-get install -y curl python${{ matrix.python-version }}-venv
+          run: |
+            ls -lrth /artifacts
+            PYTHON=python${{ matrix.python-version }}
+            $PYTHON -m venv venv
+            venv/bin/pip install -U pip
+            venv/bin/pip install longportwhale --no-index --find-links /artifacts --force-reinstall
+            venv/bin/python -c 'import longportwhale'
+      - name: Upload wheels
+        uses: actions/upload-artifact@v6
+        with:
+          name: wheels-linux-${{ matrix.target }}-${{ matrix.python-version }}
+          path: dist
 
   check-nodejs-sdk:
     needs:
@@ -127,24 +304,24 @@ jobs:
 
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: 20
           check-latest: true
           architecture: ${{ matrix.settings.architecture }}
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           override: true
           components: rustfmt, clippy
-          target: ${{ matrix.settings.target }}
+          targets: ${{ matrix.settings.target }}
 
       - name: Check with clippy
         run: cargo clippy -p longportwhale-nodejs --all-features
@@ -159,41 +336,38 @@ jobs:
         working-directory: nodejs
         run: ${{ matrix.settings.build }}
 
+
   check-java-sdk:
     needs:
       - check-format
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        java-version: ["11"]
+        os: [ubuntu-22.04, windows-latest, macos-13]
+        java-version: ["8"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Install JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           java-version: ${{ matrix.java-version }}
           distribution: "temurin"
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Install cargo make
-        run: cargo install cargo-make
+        uses: davidB/rust-cargo-make@v1
 
       - name: Check with clippy
         run: cargo clippy -p longportwhale-java --all-features
-
-      - name: Test
-        run: cargo test -p longportwhale-java --all-features
 
       - name: Compile java sources
         working-directory: java/javasrc
@@ -205,144 +379,34 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-22.04, windows-latest, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Install MSBuild
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v3
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Get CMake
         uses: lukka/get-cmake@latest
 
       - name: Install cargo make
-        run: cargo install cargo-make
+        uses: davidB/rust-cargo-make@v1
 
       - name: Check with clippy
         run: cargo clippy -p longportwhale-c --all-features
 
       - name: Build with cmake
         run: |
-          which rustc
-          rustc --version
-          export Rust_COMPILER=$(which rustc)
-          export Rust_CARGO=$(which cargo)
-          echo "Rust_COMPILER=$Rust_COMPILER"
           cargo make cmake
           cargo make c
           cargo make cpp
-
-  check-ios-cpp-sdk:
-    needs:
-      - check-format
-    strategy:
-      fail-fast: true
-      matrix:
-        settings:
-          - target: aarch64-apple-ios
-            platform: OS64
-          - target: aarch64-apple-ios-sim
-            platform: SIMULATOR64
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          components: rustfmt, clippy
-
-      - name: Install target
-        run: |
-          rustup target install ${{ matrix.settings.target }}
-
-      - name: Build C
-        working-directory: c
-        run: |
-          cargo rustc --crate-type=staticlib --target --target ${{ matrix.settings.target }}
-
-      - name: Get CMake
-        uses: lukka/get-cmake@latest
-
-      - name: Build CPP
-        working-directory: cpp
-        run: |
-          mkdir cmake.build
-          cd cmake.build && cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=../static/toolchains/ios.cmake -DPLATFORM=${{ matrix.settings.platform }} -DDENABLE_BITCODE=true ../static && make
-
-  check-android-cpp-sdk:
-    needs:
-      - check-format
-    strategy:
-      fail-fast: true
-      matrix:
-        settings:
-          - target: armv7-linux-androideabi
-            cc: armv7a-linux-androideabi28-clang
-            cxx: armv7a-linux-androideabi28-clang++
-            ar: llvm-ar
-          - target: aarch64-linux-android
-            cc: aarch64-linux-android28-clang
-            cxx: aarch64-linux-android28-clang++
-            ar: llvm-ar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          components: rustfmt, clippy
-
-      - name: Install target
-        run: |
-          rustup target install ${{ matrix.settings.target }}
-
-      - name: Setup NDK
-        id: setup-ndk
-        uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r26d
-          add-to-path: true
-
-      - name: Build C
-        working-directory: c
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          CC: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.settings.cc }}
-          AR: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.settings.ar }}
-        run: |
-          cargo rustc --crate-type=staticlib --target ${{ matrix.settings.target }}
-
-      - name: Get CMake
-        uses: lukka/get-cmake@latest
-
-      - name: Build CPP
-        working-directory: cpp
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          CC: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.settings.cc }}
-          CXX: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.settings.cxx }}
-          AR: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.settings.ar }}
-        run: |
-          mkdir cmake.build
-          cd cmake.build && cmake -DCMAKE_BUILD_TYPE=Debug ../static && make

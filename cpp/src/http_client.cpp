@@ -85,4 +85,4 @@ HttpClient::request(
     new AsyncCallback<void*, HttpResult>(callback));
 }
 
-} // namespace longport
+} // namespace longportwhale

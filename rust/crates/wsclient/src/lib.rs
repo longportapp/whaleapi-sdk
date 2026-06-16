@@ -1,4 +1,4 @@
-//! LongPort OpenAPI Websocket client
+//! WhaleAPI Websocket client
 
 #![forbid(unsafe_code)]
 #![deny(unreachable_pub)]

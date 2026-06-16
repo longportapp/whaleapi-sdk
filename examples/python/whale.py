@@ -45,6 +45,7 @@ def main():
     # Test HTTP connection
     logger.info("Testing HTTP connection...")
     try:
+        test_account = "L6VQEU00121996"
         asset_req = {
             "account_no": test_account,
             "currency": "HKD"
@@ -56,7 +57,6 @@ def main():
         # Continue to submit order to see if it persists
 
     # Submit Order
-    test_account = "L6VQEU00121996"
     req = {
         "symbol": "700.HK",
         "order_type": "MO",

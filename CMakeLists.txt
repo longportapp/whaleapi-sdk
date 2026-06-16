@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0079 NEW)
-project(longport)
+project(longportwhale)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,7 +15,7 @@ include(FetchContent)
 fetchcontent_declare(
     Corrosion
     GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
-    GIT_TAG v0.5.0
+    GIT_TAG v0.6.0
 )
 fetchcontent_makeavailable(Corrosion)
 

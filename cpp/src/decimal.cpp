@@ -307,4 +307,4 @@ Decimal::norm_pdf()
   lb_decimal_norm_pdf(value_);
 }
 
-} // namespace longport
+} // namespace longportwhale

@@ -2,7 +2,7 @@
 name = "longportwhale-wscli"
 version = "1.0.0"
 edition = "2021"
-description = "LongPort Whale Websocket SDK for Rust"
+description = "WhaleAPI Websocket SDK for Rust"
 license = "MIT OR Apache-2.0"
 
 [dependencies]

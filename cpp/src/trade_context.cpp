@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <iterator>
+
 #include "trade_context.hpp"
 #include "convert.hpp"
 
