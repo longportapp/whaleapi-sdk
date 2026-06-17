@@ -1,9 +1,7 @@
-use std::fmt::Display;
+use longportwhale_httpcli::HttpClientError;
+use longportwhale_wscli::WsClientError;
 
-use longbridge_httpcli::HttpClientError;
-use longbridge_wscli::WsClientError;
-
-/// Longbridge OpenAPI SDK error type
+/// WhaleAPI SDK error type
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// Decode Protobuf error
@@ -53,14 +51,6 @@ pub enum Error {
 }
 
 impl Error {
-    #[inline]
-    pub(crate) fn parse_field_error(name: &'static str, error: impl Display) -> Self {
-        Self::ParseField {
-            name,
-            error: error.to_string(),
-        }
-    }
-
     /// Consumes this error and returns a simple error
     pub fn into_simple_error(self) -> SimpleError {
         match self {
@@ -94,7 +84,7 @@ impl Error {
     }
 }
 
-/// Longbridge OpenAPI SDK result type
+/// WhaleAPI SDK result type
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// Simple error type
@@ -136,6 +126,14 @@ impl SimpleError {
         match self {
             SimpleError::Response { message, .. } => message.as_str(),
             SimpleError::Other(message) => message.as_str(),
+        }
+    }
+
+    /// Returns trace id if have
+    pub fn trace_id(&self) -> &str {
+        match self {
+            SimpleError::Response { trace_id, .. } => trace_id.as_str(),
+            SimpleError::Other(..) => "",
         }
     }
 }

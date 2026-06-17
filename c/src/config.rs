@@ -1,19 +1,13 @@
-use std::{
-    ffi::{c_void, CStr},
-    os::raw::c_char,
-    sync::Arc,
-};
+use std::{ffi::CStr, os::raw::c_char, sync::Arc};
 
-use longbridge::Config;
-use time::OffsetDateTime;
+use longportwhale::Config;
 
 use crate::{
-    async_call::{execute_async, CAsyncCallback},
     error::{set_error, CError},
-    types::{CLanguage, CString},
+    types::CLanguage,
 };
 
-/// Configuration options for Longbridge sdk
+/// Configuration options for LongPort sdk
 pub struct CConfig(pub(crate) Arc<Config>);
 
 /// Create a new `Config` from the given environment variables
@@ -23,14 +17,12 @@ pub struct CConfig(pub(crate) Arc<Config>);
 ///
 /// # Variables
 ///
-/// - `LONGBRIDGE_APP_KEY` - App key
-/// - `LONGBRIDGE_APP_SECRET` - App secret
-/// - `LONGBRIDGE_ACCESS_TOKEN` - Access token
-/// - `LONGBRIDGE_HTTP_URL` - HTTP endpoint url (Default: `https://openapi.longbridgeapp.com`)
-/// - `LONGBRIDGE_QUOTE_WS_URL` - Quote websocket endpoint url (Default:
-///   `wss://openapi-quote.longbridgeapp.com/v2`)
-/// - `LONGBRIDGE_TRADE_WS_URL` - Trade websocket endpoint url (Default:
-///   `wss://openapi-trade.longbridgeapp.com/v2`)
+/// - `LONGPORT_APP_KEY` - App key
+/// - `LONGPORT_APP_SECRET` - App secret
+/// - `LONGPORT_ACCESS_TOKEN` - Access token
+/// - `LONGPORT_HTTP_URL` - HTTP endpoint url (Default: `https://openapi.longportapp.com`)
+/// - `LONGPORT_TRADE_WS_URL` - Trade websocket endpoint url (Default:
+///   `wss://openapi-trade.longportapp.com`)
 #[no_mangle]
 pub unsafe extern "C" fn lb_config_from_env(error: *mut *mut CError) -> *mut CConfig {
     match Config::from_env() {
@@ -51,7 +43,6 @@ pub unsafe extern "C" fn lb_config_new(
     app_secret: *const c_char,
     access_token: *const c_char,
     http_url: *const c_char,
-    quote_ws_url: *const c_char,
     trade_ws_url: *const c_char,
     language: *const CLanguage,
 ) -> *mut CConfig {
@@ -66,13 +57,6 @@ pub unsafe extern "C" fn lb_config_new(
 
     if !http_url.is_null() {
         config = config.http_url(CStr::from_ptr(http_url).to_str().expect("invalid http url"));
-    }
-    if !quote_ws_url.is_null() {
-        config = config.quote_ws_url(
-            CStr::from_ptr(quote_ws_url)
-                .to_str()
-                .expect("invalid quote websocket url"),
-        );
     }
     if !trade_ws_url.is_null() {
         config = config.trade_ws_url(
@@ -92,26 +76,4 @@ pub unsafe extern "C" fn lb_config_new(
 #[no_mangle]
 pub unsafe extern "C" fn lb_config_free(config: *mut CConfig) {
     let _ = Box::from_raw(config);
-}
-
-/// Gets a new `access_token`
-#[no_mangle]
-pub unsafe extern "C" fn lb_config_refresh_access_token(
-    config: *mut CConfig,
-    expired_at: i64,
-    callback: CAsyncCallback,
-    userdata: *mut c_void,
-) {
-    let config = &mut (*config).0;
-    execute_async::<c_void, _, _>(callback, std::ptr::null(), userdata, async move {
-        let token: CString = config
-            .refresh_access_token(if expired_at == 0 {
-                None
-            } else {
-                Some(OffsetDateTime::from_unix_timestamp(expired_at).unwrap())
-            })
-            .await?
-            .into();
-        Ok(token)
-    });
 }

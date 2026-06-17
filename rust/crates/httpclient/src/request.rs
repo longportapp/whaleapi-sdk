@@ -12,7 +12,7 @@ use crate::{
     HttpClient, HttpClientError, HttpClientResult,
 };
 
-const USER_AGENT: &str = "openapi-sdk";
+const USER_AGENT: &str = "whaleapi-sdk";
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 const RETRY_COUNT: usize = 5;
 const RETRY_INITIAL_DELAY: Duration = Duration::from_millis(100);

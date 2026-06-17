@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 use crate::{HttpClientConfig, HttpClientError, HttpClientResult, Json, RequestBuilder};
 
-/// Longbridge HTTP client
+/// LongPort HTTP client
 #[derive(Clone)]
 pub struct HttpClient {
     pub(crate) http_cli: Client,
@@ -30,10 +30,10 @@ impl HttpClient {
     ///
     /// # Variables
     ///
-    /// - LONGBRIDGE_APP_KEY
-    /// - LONGBRIDGE_APP_SECRET
-    /// - LONGBRIDGE_ACCESS_TOKEN
-    /// - LONGBRIDGE_HTTP_URL
+    /// - LONGPORT_APP_KEY
+    /// - LONGPORT_APP_SECRET
+    /// - LONGPORT_ACCESS_TOKEN
+    /// - LONGPORT_HTTP_URL
     pub fn from_env() -> Result<Self, HttpClientError> {
         Ok(Self::new(HttpClientConfig::from_env()?))
     }
@@ -60,7 +60,7 @@ impl HttpClient {
 
     /// Get the socket OTP(One Time Password)
     ///
-    /// Reference: <https://open.longbridgeapp.com/en/docs/socket-token-api>
+    /// Reference: <https://open.longportapp.com/en/docs/socket-token-api>
     pub async fn get_otp(&self) -> HttpClientResult<String> {
         #[derive(Debug, Deserialize)]
         struct Response {
@@ -69,24 +69,6 @@ impl HttpClient {
 
         Ok(self
             .request(Method::GET, "/v1/socket/token")
-            .response::<Json<Response>>()
-            .send()
-            .await?
-            .0
-            .otp)
-    }
-
-    /// Get the socket OTP v2(One Time Password)
-    ///
-    /// Reference: <https://open.longbridgeapp.com/en/docs/socket-token-api>
-    pub async fn get_otp_v2(&self) -> HttpClientResult<String> {
-        #[derive(Debug, Deserialize)]
-        struct Response {
-            otp: String,
-        }
-
-        Ok(self
-            .request(Method::GET, "/v2/socket/token")
             .response::<Json<Response>>()
             .send()
             .await?

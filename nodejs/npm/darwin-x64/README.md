@@ -1,3 +1,3 @@
-# `longbridge-darwin-x64`
+# `longportwhale-darwin-x64`
 
-This is the **x86_64-apple-darwin** binary for `longbridge`
+This is the **x86_64-apple-darwin** binary for `longportwhale`

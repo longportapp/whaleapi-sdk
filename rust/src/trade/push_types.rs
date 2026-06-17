@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use longbridge_proto::trade::Notification;
+use longport_proto::trade::Notification;
 use prost::Message;
 use rust_decimal::Decimal;
 use serde::Deserialize;
@@ -85,6 +85,8 @@ pub struct PushOrderChanged {
     /// Last price
     #[serde(with = "serde_utils::decimal_opt_empty_is_none")]
     pub last_price: Option<Decimal>,
+    /// Remark message
+    pub remark: String,
 }
 
 /// Push event

@@ -1,87 +1,29 @@
-# Longbridge OpenAPI SDK for Node.js
+# WhaleAPI SDK for Node.js
 
-`longbridge` provides an easy-to-use interface for invokes [`Longbridge OpenAPI`](https://open.longbridgeapp.com/en/).
+`longportwhale` provides an easy-to-use interface for invokes `WhaleAPI`.
 
 ## Quickstart
 
-_Install Longbridge OpenAPI SDK_
+_Install WhaleAPI SDK_
 
 ```bash
-npm install longbridge
+npm install longportwhale
 ```
 
 _Setting environment variables(MacOS/Linux)_
 
 ```bash
-export LONGBRIDGE_APP_KEY="App Key get from user center"
-export LONGBRIDGE_APP_SECRET="App Secret get from user center"
-export LONGBRIDGE_ACCESS_TOKEN="Access Token get from user center"
+export LONGPORT_APP_KEY="App Key get from user center"
+export LONGPORT_APP_SECRET="App Secret get from user center"
+export LONGPORT_ACCESS_TOKEN="Access Token get from user center"
 ```
 
 _Setting environment variables(Windows)_
 
 ```powershell
-setx LONGBRIDGE_APP_KEY "App Key get from user center"
-setx LONGBRIDGE_APP_SECRET "App Secret get from user center"
-setx LONGBRIDGE_ACCESS_TOKEN "Access Token get from user center"
-```
-
-## Quote API _(Get basic information of securities)_
-
-```javascript
-const { Config, QuoteContext } = require("longbridge");
-
-let config = Config.fromEnv();
-QuoteContext.new(config)
-    .then((ctx) => ctx.quote(["700.HK", "AAPL.US", "TSLA.US", "NFLX.US"]))
-    .then((resp) => {
-        for (let obj of resp) {
-            console.log(obj.toString())
-        }
-    });
-```
-
-## Quote API _(Subscribe quotes)_
-
-```javascript
-const { Config, QuoteContext, SubType } = require("longbridge");
-
-let config = Config.fromEnv();
-QuoteContext.new(config).then((ctx) => {
-  ctx.setOnQuote((_, event) => console.log(event.toString()));
-  ctx.subscribe(
-    ["700.HK", "AAPL.US", "TSLA.US", "NFLX.US"],
-    [SubType.Quote],
-    true
-  );
-});
-```
-
-## Trade API _(Submit order)_
-
-```javascript
-const {
-  Config,
-  TradeContext,
-  Decimal,
-  OrderSide,
-  TimeInForceType,
-  OrderType,
-} = require("longbridge");
-
-let config = Config.fromEnv();
-TradeContext.new(config)
-  .then((ctx) =>
-    ctx.submitOrder({
-      symbol: "700.HK",
-      orderType: OrderType.LO,
-      side: OrderSide.Buy,
-      timeInForce: TimeInForceType.Day,
-      submittedPrice: new Decimal("50"),
-      submittedQuantity: 200,
-    })
-  )
-  .then((resp) => console.log(resp.toString()));
+setx LONGPORT_APP_KEY "App Key get from user center"
+setx LONGPORT_APP_SECRET "App Secret get from user center"
+setx LONGPORT_ACCESS_TOKEN "Access Token get from user center"
 ```
 
 ## License

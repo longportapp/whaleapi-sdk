@@ -1,15 +1,10 @@
-import com.longbridge.*;
-import com.longbridge.trade.*;
-import com.longbridge.quote.*;
-import java.math.BigDecimal;
-import java.util.Arrays;
+import com.longportwhale.*;
+import com.longportwhale.trade.*;
 
-class Main {
+public class Main {
     public static void main(String[] args) throws Exception {
-        try (Config config = Config.fromEnv(); QuoteContext ctx = QuoteContext.create(config).get()) {
-            SecurityStaticInfo[] resp = ctx.getStaticInfo(new String[] { "700.HK", "AAPL.US", "TSLA.US", "NFLX.US" })
-                    .get();
-            System.out.println(Arrays.toString(resp));
+        try (Config conf = Config.fromEnv(); TradeContext tctx = TradeContext.create(conf).get(); HttpClient cli = HttpClient.fromEnv()) {
+          // do sth 
         }
     }
 }

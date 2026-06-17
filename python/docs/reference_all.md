@@ -1,3 +1,3 @@
 # Code Reference
 
-::: longbridge.openapi
+::: longportwhale.openapi

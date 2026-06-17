@@ -1,6 +1,7 @@
 use std::{
     collections::HashMap,
     str::FromStr,
+    sync::Arc,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
@@ -9,7 +10,7 @@ use futures_util::{
     SinkExt, StreamExt, TryFutureExt,
 };
 use leaky_bucket::RateLimiter;
-use longbridge_proto::control::{AuthRequest, AuthResponse, ReconnectRequest, ReconnectResponse};
+use longport_proto::control::{AuthRequest, AuthResponse, ReconnectRequest, ReconnectResponse};
 use num_enum::IntoPrimitive;
 use prost::Message as _;
 use tokio::{
@@ -26,7 +27,7 @@ use crate::{
     codec::Packet, WsClientError, WsClientResult, WsCloseReason, WsEvent, WsResponseErrorDetail,
 };
 
-const CONNECT_TIMEOUT: Duration = Duration::from_secs(30);
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(5);
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 const HEARTBEAT_TIMEOUT: Duration = Duration::from_secs(120);
 const AUTH_TIMEOUT: Duration = Duration::from_secs(5);
@@ -35,7 +36,7 @@ const RECONNECT_TIMEOUT: Duration = Duration::from_secs(5);
 const COMMAND_CODE_AUTH: u8 = 2;
 const COMMAND_CODE_RECONNECT: u8 = 3;
 
-/// Longbridge websocket protocol version
+/// LongPort websocket protocol version
 #[derive(Debug, IntoPrimitive, Copy, Clone, Eq, PartialEq, Hash)]
 #[repr(i32)]
 pub enum ProtocolVersion {
@@ -43,7 +44,7 @@ pub enum ProtocolVersion {
     Version1 = 1,
 }
 
-/// Longbridge websocket codec type
+/// LongPort websocket codec type
 #[derive(Debug, IntoPrimitive, Copy, Clone, Eq, PartialEq, Hash)]
 #[repr(i32)]
 pub enum CodecType {
@@ -51,7 +52,7 @@ pub enum CodecType {
     Protobuf = 1,
 }
 
-/// Longbridge websocket platform type
+/// LongPort websocket platform type
 #[derive(Debug, IntoPrimitive, Copy, Clone, Eq, PartialEq, Hash)]
 #[repr(i32)]
 pub enum Platform {
@@ -81,6 +82,17 @@ pub struct RateLimit {
     pub refill: usize,
 }
 
+impl From<RateLimit> for RateLimiter {
+    fn from(config: RateLimit) -> Self {
+        RateLimiter::builder()
+            .interval(config.interval)
+            .refill(config.refill)
+            .max(config.max)
+            .initial(0)
+            .build()
+    }
+}
+
 struct Context<'a> {
     request_id: u32,
     inflight_requests: HashMap<u32, oneshot::Sender<WsClientResult<Vec<u8>>>>,
@@ -88,7 +100,6 @@ struct Context<'a> {
     stream: SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>,
     command_rx: &'a mut mpsc::UnboundedReceiver<Command>,
     event_sender: &'a mut mpsc::UnboundedSender<WsEvent>,
-    rate_limiter: Option<RateLimiter>,
 }
 
 impl<'a> Context<'a> {
@@ -96,7 +107,6 @@ impl<'a> Context<'a> {
         conn: WebSocketStream<MaybeTlsStream<TcpStream>>,
         command_rx: &'a mut mpsc::UnboundedReceiver<Command>,
         event_sender: &'a mut mpsc::UnboundedSender<WsEvent>,
-        rate_limit: Option<RateLimit>,
     ) -> Self {
         let (sink, stream) = conn.split();
         Context {
@@ -106,14 +116,6 @@ impl<'a> Context<'a> {
             stream,
             command_rx,
             event_sender,
-            rate_limiter: rate_limit.map(|config| {
-                RateLimiter::builder()
-                    .interval(config.interval)
-                    .refill(config.refill)
-                    .max(config.max)
-                    .initial(config.initial)
-                    .build()
-            }),
         }
     }
 
@@ -167,10 +169,6 @@ impl<'a> Context<'a> {
                 body,
                 reply_tx,
             } => {
-                if let Some(rate_limiter) = &mut self.rate_limiter {
-                    rate_limiter.acquire_one().await;
-                }
-
                 let request_id = self.get_request_id();
                 let msg = Message::Binary(
                     Packet::Request {
@@ -205,8 +203,8 @@ impl<'a> Context<'a> {
                         if status == 0 {
                             let _ = sender.send(Ok(body));
                         } else {
-                            let detail = longbridge_proto::Error::decode(&*body).ok().map(
-                                |longbridge_proto::Error { code, msg }| WsResponseErrorDetail {
+                            let detail = longport_proto::Error::decode(&*body).ok().map(
+                                |longport_proto::Error { code, msg }| WsResponseErrorDetail {
                                     code,
                                     msg,
                                 },
@@ -255,10 +253,11 @@ impl WsSession {
     }
 }
 
-/// Longbridge Websocket client
+/// WhaleAPI Websocket client
 #[derive(Clone)]
 pub struct WsClient {
     command_tx: mpsc::UnboundedSender<Command>,
+    rate_limit: Arc<HashMap<u8, RateLimiter>>,
 }
 
 impl WsClient {
@@ -269,24 +268,45 @@ impl WsClient {
         codec: CodecType,
         platform: Platform,
         event_sender: mpsc::UnboundedSender<WsEvent>,
-        rate_limit: Option<RateLimit>,
+        rate_limit: Vec<(u8, RateLimit)>,
     ) -> WsClientResult<Self> {
         let (command_tx, command_rx) = mpsc::unbounded_channel();
         let conn = do_connect(request, version, codec, platform).await?;
-        tokio::spawn(client_loop(conn, command_rx, event_sender, rate_limit));
-        Ok(Self { command_tx })
+        tokio::spawn(client_loop(conn, command_rx, event_sender));
+        Ok(Self {
+            command_tx,
+            rate_limit: Arc::new(
+                rate_limit
+                    .into_iter()
+                    .map(|(cmd, rate_limit)| (cmd, rate_limit.into()))
+                    .collect(),
+            ),
+        })
+    }
+
+    /// Set the rate limit
+    pub fn set_rate_limit(&mut self, rate_limit: Vec<(u8, RateLimit)>) {
+        self.rate_limit = Arc::new(
+            rate_limit
+                .into_iter()
+                .map(|(cmd, rate_limit)| (cmd, rate_limit.into()))
+                .collect(),
+        );
     }
 
     /// Send an authentication request to get a [`WsSession`]
     ///
-    /// Reference: <https://open.longbridgeapp.com/en/docs/socket-token-api>
-    /// Reference: <https://open.longbridgeapp.com/en/docs/socket/control-command#auth>
+    /// Reference: <https://open.longportapp.com/en/docs/socket-token-api>
+    /// Reference: <https://open.longportapp.com/en/docs/socket/control-command#auth>
     pub async fn request_auth(&self, otp: impl Into<String>) -> WsClientResult<WsSession> {
         let resp: AuthResponse = self
             .request(
                 COMMAND_CODE_AUTH,
                 Some(AUTH_TIMEOUT),
-                AuthRequest { token: otp.into() },
+                AuthRequest {
+                    token: otp.into(),
+                    metadata: Default::default(),
+                },
             )
             .await?;
         let expires_mills = resp.expires.saturating_sub(
@@ -304,7 +324,7 @@ impl WsClient {
 
     /// Send a reconnect request to get a [`WsSession`]
     ///
-    /// Reference: <https://open.longbridgeapp.com/en/docs/socket/control-command#reconnect>
+    /// Reference: <https://open.longportapp.com/en/docs/socket/control-command#reconnect>
     pub async fn request_reconnect(
         &self,
         session_id: impl Into<String>,
@@ -315,6 +335,7 @@ impl WsClient {
                 Some(RECONNECT_TIMEOUT),
                 ReconnectRequest {
                     session_id: session_id.into(),
+                    metadata: Default::default(),
                 },
             )
             .await?;
@@ -331,6 +352,10 @@ impl WsClient {
         timeout: Option<Duration>,
         body: Vec<u8>,
     ) -> WsClientResult<Vec<u8>> {
+        if let Some(rate_limit) = self.rate_limit.get(&command_code) {
+            rate_limit.acquire_one().await;
+        }
+
         let (reply_tx, reply_rx) = oneshot::channel();
         self.command_tx
             .send(Command::Request {
@@ -401,9 +426,8 @@ async fn client_loop(
     conn: WebSocketStream<MaybeTlsStream<TcpStream>>,
     mut command_tx: mpsc::UnboundedReceiver<Command>,
     mut event_sender: mpsc::UnboundedSender<WsEvent>,
-    rate_limit: Option<RateLimit>,
 ) {
-    let mut ctx = Context::new(conn, &mut command_tx, &mut event_sender, rate_limit);
+    let mut ctx = Context::new(conn, &mut command_tx, &mut event_sender);
 
     let res = ctx.process_loop().await;
     match res {

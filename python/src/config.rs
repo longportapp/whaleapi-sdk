@@ -1,9 +1,9 @@
 use pyo3::{prelude::*, types::PyType};
 
-use crate::{error::ErrorNewType, time::PyOffsetDateTimeWrapper, types::Language};
+use crate::{error::ErrorNewType, types::Language};
 
 #[pyclass(name = "Config")]
-pub(crate) struct Config(pub(crate) longbridge::Config);
+pub(crate) struct Config(pub(crate) longportwhale::Config);
 
 #[pymethods]
 impl Config {
@@ -12,45 +12,35 @@ impl Config {
         app_key,
         app_secret,
         access_token,
-        http_url = "https://openapi.longbridgeapp.com",
-        quote_ws_url = "wss://openapi-quote.longbridgeapp.com/v2",
-        trade_ws_url = "wss://openapi-trade.longbridgeapp.com/v2",
-        language = Language::EN,
+        http_url = None,
+        trade_ws_url = None,
+        language = None,
     ))]
     fn py_new(
         app_key: String,
         app_secret: String,
         access_token: String,
-        http_url: &str,
-        quote_ws_url: &str,
-        trade_ws_url: &str,
-        language: Language,
+        http_url: Option<String>,
+        trade_ws_url: Option<String>,
+        language: Option<Language>,
     ) -> Self {
-        Self(
-            longbridge::Config::new(app_key, app_secret, access_token)
-                .http_url(http_url)
-                .quote_ws_url(quote_ws_url)
-                .trade_ws_url(trade_ws_url)
-                .language(language.into()),
-        )
+        let mut config = longportwhale::Config::new(app_key, app_secret, access_token);
+        if let Some(http_url) = http_url {
+            config = config.http_url(http_url);
+        }
+        if let Some(trade_ws_url) = trade_ws_url {
+            config = config.trade_ws_url(trade_ws_url);
+        }
+        if let Some(language) = language {
+            config = config.language(language.into());
+        }
+        Self(config)
     }
 
     #[classmethod]
-    fn from_env(_cls: &PyType) -> PyResult<Self> {
-        Ok(Self(longbridge::Config::from_env().map_err(ErrorNewType)?))
-    }
-
-    /// Gets a new `access_token`.
-    ///
-    /// `expired_at` - The expiration time of the access token, defaults to `90`
-    /// days.
-    pub fn refresh_access_token(
-        &self,
-        expired_at: Option<PyOffsetDateTimeWrapper>,
-    ) -> PyResult<String> {
-        Ok(self
-            .0
-            .refresh_access_token_blocking(expired_at.map(|t| t.0))
-            .map_err(ErrorNewType)?)
+    fn from_env(_cls: &Bound<'_, PyType>) -> PyResult<Self> {
+        Ok(Self(
+            longportwhale::Config::from_env().map_err(ErrorNewType)?,
+        ))
     }
 }

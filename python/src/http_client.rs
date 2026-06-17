@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use longbridge::httpclient::{
+use longportwhale::httpclient::{
     HttpClient as LbHttpClient, HttpClientConfig, HttpClientError, Json, Method,
 };
 use pyo3::{exceptions::PyRuntimeError, prelude::*, types::PyType};
@@ -26,9 +26,9 @@ impl HttpClient {
     }
 
     #[classmethod]
-    fn from_env(_cls: &PyType) -> PyResult<Self> {
+    fn from_env(_cls: &Bound<'_, PyType>) -> PyResult<Self> {
         Ok(Self(LbHttpClient::from_env().map_err(|err| {
-            ErrorNewType(longbridge::Error::HttpClient(err))
+            ErrorNewType(longportwhale::Error::HttpClient(err))
         })?))
     }
 
@@ -37,15 +37,15 @@ impl HttpClient {
         method: String,
         path: String,
         headers: Option<HashMap<String, String>>,
-        body: Option<&PyAny>,
-    ) -> PyResult<PyObject> {
+        body: Option<&Bound<'_, PyAny>>,
+    ) -> PyResult<Py<PyAny>> {
         let body = body
-            .map(pythonize::depythonize::<Value>)
+            .map(|obj| pythonize::depythonize::<Value>(obj))
             .transpose()
             .map_err(|err| PyRuntimeError::new_err(err.to_string()))?;
         let req = self.0.request(
             method.to_uppercase().parse::<Method>().map_err(|_| {
-                ErrorNewType(longbridge::Error::HttpClient(
+                ErrorNewType(longportwhale::Error::HttpClient(
                     HttpClientError::InvalidRequestMethod,
                 ))
             })?,
@@ -61,17 +61,25 @@ impl HttpClient {
                 let resp = tokio::runtime::Runtime::new()
                     .unwrap()
                     .block_on(req.body(Json(body)).response::<Json<Value>>().send())
-                    .map_err(|err| ErrorNewType(longbridge::Error::HttpClient(err)))?;
-                Ok(Python::with_gil(|py| pythonize::pythonize(py, &resp.0))
-                    .map_err(|err| PyRuntimeError::new_err(err.to_string()))?)
+                    .map_err(|err| ErrorNewType(longportwhale::Error::HttpClient(err)))?;
+                let result = Python::attach(|py| -> PyResult<Py<PyAny>> {
+                    let bound = pythonize::pythonize(py, &resp.0)
+                        .map_err(|err| PyRuntimeError::new_err(err.to_string()))?;
+                    Ok(bound.unbind())
+                })?;
+                Ok(result)
             }
             None => {
                 let resp = tokio::runtime::Runtime::new()
                     .unwrap()
                     .block_on(req.response::<Json<Value>>().send())
-                    .map_err(|err| ErrorNewType(longbridge::Error::HttpClient(err)))?;
-                Ok(Python::with_gil(|py| pythonize::pythonize(py, &resp.0))
-                    .map_err(|err| PyRuntimeError::new_err(err.to_string()))?)
+                    .map_err(|err| ErrorNewType(longportwhale::Error::HttpClient(err)))?;
+                let result = Python::attach(|py| -> PyResult<Py<PyAny>> {
+                    let bound = pythonize::pythonize(py, &resp.0)
+                        .map_err(|err| PyRuntimeError::new_err(err.to_string()))?;
+                    Ok(bound.unbind())
+                })?;
+                Ok(result)
             }
         }
     }

@@ -3,7 +3,7 @@ use std::{
     ffi::{c_char, c_void, CStr, CString},
 };
 
-use longbridge::{
+use longportwhale::{
     httpclient::{HttpClient, HttpClientConfig, HttpClientError},
     Error,
 };
@@ -13,7 +13,7 @@ use crate::{
     error::{set_error, CError},
 };
 
-/// A HTTP client for Longbridge OpenApi
+/// A HTTP client for LongPort OpenApi
 pub struct CHttpClient(HttpClient);
 
 /// Create a HTTP client
@@ -51,10 +51,10 @@ pub unsafe extern "C" fn lb_http_client_free(http_client: *mut CHttpClient) {
 ///
 /// # Variables
 ///
-/// - `LONGBRIDGE_HTTP_URL` - HTTP endpoint url
-/// - `LONGBRIDGE_APP_KEY` - App key
-/// - `LONGBRIDGE_APP_SECRET` - App secret
-/// - `LONGBRIDGE_ACCESS_TOKEN` - Access token
+/// - `LONGPORT_HTTP_URL` - HTTP endpoint url
+/// - `LONGPORT_APP_KEY` - App key
+/// - `LONGPORT_APP_SECRET` - App secret
+/// - `LONGPORT_ACCESS_TOKEN` - Access token
 #[no_mangle]
 pub unsafe extern "C" fn lb_http_client_from_env(error: *mut *mut CError) -> *mut CHttpClient {
     match HttpClient::from_env() {
@@ -112,6 +112,7 @@ pub unsafe extern "C" fn lb_http_client_request(
     };
     let mut r_headers = HashMap::new();
     if !headers.is_null() {
+        let mut headers = headers;
         while !(*headers).name.is_null() {
             let name = CStr::from_ptr((*headers).name)
                 .to_str()
@@ -122,6 +123,7 @@ pub unsafe extern "C" fn lb_http_client_request(
                 .expect("invalid header name")
                 .to_string();
             r_headers.insert(name, value);
+            headers = headers.add(1);
         }
     }
 

@@ -1,4 +1,4 @@
-pub(crate) struct ErrorNewType(pub(crate) longbridge::Error);
+pub(crate) struct ErrorNewType(pub(crate) longportwhale::Error);
 
 impl std::convert::From<ErrorNewType> for napi::Error {
     #[inline]

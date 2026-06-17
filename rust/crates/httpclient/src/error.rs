@@ -33,7 +33,7 @@ pub enum HttpClientError {
     RequestTimeout,
 
     /// OpenAPI error
-    #[error("openapi error: code={code}: {message}")]
+    #[error("openapi error: code={code}, msg: {message}, trace-id: {trace_id}")]
     OpenApi {
         /// Error code
         code: i32,

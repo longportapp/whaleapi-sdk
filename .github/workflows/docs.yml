@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - release
+      - master
 
 jobs:
   build-api-docs:
@@ -10,24 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           submodules: true
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
           components: rust-docs
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.9"
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: 16
           check-latest: true
 
       - name: Install JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           java-version: "11"
           distribution: "temurin"
@@ -37,18 +37,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y doxygen
 
-      - name: Build Rust docs
-        run: cargo doc -p longbridge --no-deps
+      - name: Build Rust doc
+        run: cargo doc -p longportwhale --no-deps
       - name: Build Python wheels
-        uses: messense/maturin-action@v1
+        uses: PyO3/maturin-action@v1
         with:
           target: "x86_64"
-          manylinux: auto
-          args: -i 3.9 --release --out dist --no-sdist -m python/Cargo.toml
+          args: -i python3.9 --release --out dist -m python/Cargo.toml
       - name: Install built wheel
         run: |
-          pip install longbridge --no-index --find-links dist --force-reinstall
-          python -c "import longbridge"
+          pip install longportwhale --no-index --find-links dist --force-reinstall
+          python -c "import longportwhale"
 
       - name: Build Python docs
         run: |
@@ -80,7 +79,7 @@ jobs:
           mv -f target/doc gh-pages/rust
           mv -f python/site gh-pages/python
           mv -f nodejs/docs gh-pages/nodejs
-          mv -f java/javasrc/target/site/apidocs gh-pages/java
+          mv -f java/javasrc/target/reports/apidocs gh-pages/java
           mv -f c/html gh-pages/c
           mv -f cpp/html gh-pages/cpp
           cp .github/misc/templates/docs.html gh-pages/index.html

@@ -2,9 +2,9 @@
 
 #include "callback.hpp"
 #include "http_client.hpp"
-#include "longbridge.h"
+#include "longportwhale.h"
 
-namespace longbridge {
+namespace longportwhale {
 
 HttpClient::HttpClient()
   : http_client_(nullptr)
@@ -85,4 +85,4 @@ HttpClient::request(
     new AsyncCallback<void*, HttpResult>(callback));
 }
 
-} // namespace longbridge
+} // namespace longportwhale

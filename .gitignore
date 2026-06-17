@@ -4,3 +4,9 @@
 *.log
 cmake.build
 build
+examples/python/.venv
+examples/.env
+python/pysrc/longportwhale/__pycache__
+python/pysrc/longportwhale/*.so
+nodejs/*.node
+**/node_modules

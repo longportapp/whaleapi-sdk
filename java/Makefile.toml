@@ -1,8 +1,25 @@
 [tasks.java]
 command = "cargo"
-args = ["build", "-p", "longbridge-java"]
+args = ["build", "-p", "longportwhale-java"]
 
 [tasks.javah]
+args = [
+  "--release",
+  "8",
+  "-h",
+  "c",
+  "-cp",
+  "libs/native-lib-loader-2.4.0.jar:libs/slf4j-api-1.7.30.jar:libs/gson-2.10.1.jar",
+  "-sourcepath",
+  "javasrc/src/main/java",
+  "-d",
+  "classes",
+  "javasrc/src/main/java/com/longportwhale/SdkNative.java",
+]
+command = "javac"
+cwd = "java"
+
+[tasks.javah_windows]
 args = [
   "--release",
   "8",
@@ -14,12 +31,47 @@ args = [
   "javasrc/src/main/java",
   "-d",
   "classes",
-  "javasrc/src/main/java/com/longbridge/SdkNative.java",
+  "javasrc/src/main/java/com/longportwhale/SdkNative.java",
 ]
 command = "javac"
 cwd = "java"
 
+
 [tasks.compile-java-test]
+args = [
+  "--release",
+  "8",
+  "-cp",
+  "libs/native-lib-loader-2.4.0.jar:libs/slf4j-api-1.7.30.jar:libs/gson-2.10.1.jar",
+  "-sourcepath",
+  "javasrc/src/main/java",
+  "-d",
+  "classes",
+
+  "javasrc/src/main/java/com/longportwhale/AsyncCallback.java",
+  "javasrc/src/main/java/com/longportwhale/Config.java",
+  "javasrc/src/main/java/com/longportwhale/ConfigBuilder.java",
+  "javasrc/src/main/java/com/longportwhale/Language.java",
+  "javasrc/src/main/java/com/longportwhale/Market.java",
+  "javasrc/src/main/java/com/longportwhale/OpenApiException.java",
+  "javasrc/src/main/java/com/longportwhale/SdkNative.java",
+  "javasrc/src/main/java/com/longportwhale/AsyncCallback.java",
+  "javasrc/src/main/java/com/longportwhale/HttpClient.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderChangedHandler.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderSide.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderStatus.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderTag.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderType.java",
+  "javasrc/src/main/java/com/longportwhale/trade/PushOrderChanged.java",
+  "javasrc/src/main/java/com/longportwhale/trade/TopicType.java",
+  "javasrc/src/main/java/com/longportwhale/trade/TradeContext.java",
+  "javasrc/src/main/java/com/longportwhale/trade/TriggerStatus.java",
+  "test/Main.java",
+]
+command = "javac"
+cwd = "java"
+
+[tasks.compile-java-test_windows]
 args = [
   "--release",
   "8",
@@ -30,115 +82,24 @@ args = [
   "-d",
   "classes",
 
-  "javasrc/src/main/java/com/longbridge/AsyncCallback.java",
-  "javasrc/src/main/java/com/longbridge/Config.java",
-  "javasrc/src/main/java/com/longbridge/ConfigBuilder.java",
-  "javasrc/src/main/java/com/longbridge/Language.java",
-  "javasrc/src/main/java/com/longbridge/Market.java",
-  "javasrc/src/main/java/com/longbridge/OpenApiException.java",
-  "javasrc/src/main/java/com/longbridge/SdkNative.java",
-  "javasrc/src/main/java/com/longbridge/AsyncCallback.java",
-
-  "javasrc/src/main/java/com/longbridge/HttpClient.java",
-
-  "javasrc/src/main/java/com/longbridge/quote/AdjustType.java",
-  "javasrc/src/main/java/com/longbridge/quote/Brokers.java",
-  "javasrc/src/main/java/com/longbridge/quote/BrokersHandler.java",
-  "javasrc/src/main/java/com/longbridge/quote/Candlestick.java",
-  "javasrc/src/main/java/com/longbridge/quote/CandlestickHandler.java",
-  "javasrc/src/main/java/com/longbridge/quote/CapitalDistribution.java",
-  "javasrc/src/main/java/com/longbridge/quote/CapitalDistributionResponse.java",
-  "javasrc/src/main/java/com/longbridge/quote/CapitalFlowLine.java",
-  "javasrc/src/main/java/com/longbridge/quote/Depth.java",
-  "javasrc/src/main/java/com/longbridge/quote/DepthHandler.java",
-  "javasrc/src/main/java/com/longbridge/quote/DerivativeType.java",
-  "javasrc/src/main/java/com/longbridge/quote/IntradayLine.java",
-  "javasrc/src/main/java/com/longbridge/quote/IssuerInfo.java",
-  "javasrc/src/main/java/com/longbridge/quote/MarketTradingDays.java",
-  "javasrc/src/main/java/com/longbridge/quote/MarketTradingSession.java",
-  "javasrc/src/main/java/com/longbridge/quote/OptionDirection.java",
-  "javasrc/src/main/java/com/longbridge/quote/OptionQuote.java",
-  "javasrc/src/main/java/com/longbridge/quote/OptionType.java",
-  "javasrc/src/main/java/com/longbridge/quote/ParticipantInfo.java",
-  "javasrc/src/main/java/com/longbridge/quote/Period.java",
-  "javasrc/src/main/java/com/longbridge/quote/PrePostQuote.java",
-  "javasrc/src/main/java/com/longbridge/quote/PushBrokers.java",
-  "javasrc/src/main/java/com/longbridge/quote/PushCandlestick.java",
-  "javasrc/src/main/java/com/longbridge/quote/PushDepth.java",
-  "javasrc/src/main/java/com/longbridge/quote/PushQuote.java",
-  "javasrc/src/main/java/com/longbridge/quote/PushTrades.java",
-  "javasrc/src/main/java/com/longbridge/quote/QuoteContext.java",
-  "javasrc/src/main/java/com/longbridge/quote/QuoteHandler.java",
-  "javasrc/src/main/java/com/longbridge/quote/RealtimeQuote.java",
-  "javasrc/src/main/java/com/longbridge/quote/SecurityBoard.java",
-  "javasrc/src/main/java/com/longbridge/quote/SecurityBrokers.java",
-  "javasrc/src/main/java/com/longbridge/quote/SecurityDepth.java",
-  "javasrc/src/main/java/com/longbridge/quote/SecurityQuote.java",
-  "javasrc/src/main/java/com/longbridge/quote/SecurityStaticInfo.java",
-  "javasrc/src/main/java/com/longbridge/quote/StrikePriceInfo.java",
-  "javasrc/src/main/java/com/longbridge/quote/SubFlags.java",
-  "javasrc/src/main/java/com/longbridge/quote/Subscription.java",
-  "javasrc/src/main/java/com/longbridge/quote/Trade.java",
-  "javasrc/src/main/java/com/longbridge/quote/TradeDirection.java",
-  "javasrc/src/main/java/com/longbridge/quote/TradeSession.java",
-  "javasrc/src/main/java/com/longbridge/quote/TradeStatus.java",
-  "javasrc/src/main/java/com/longbridge/quote/TradesHandler.java",
-  "javasrc/src/main/java/com/longbridge/quote/TradingSessionInfo.java",
-  "javasrc/src/main/java/com/longbridge/quote/WarrantQuote.java",
-  "javasrc/src/main/java/com/longbridge/quote/WarrantType.java",
-  "javasrc/src/main/java/com/longbridge/quote/WatchlistGroup.java",
-  "javasrc/src/main/java/com/longbridge/quote/CalcIndex.java",
-  "javasrc/src/main/java/com/longbridge/quote/SecurityCalcIndex.java",
-  "javasrc/src/main/java/com/longbridge/quote/WatchlistSecurity.java",
-  "javasrc/src/main/java/com/longbridge/quote/CreateWatchlistGroup.java",
-  "javasrc/src/main/java/com/longbridge/quote/CreateWatchlistGroupResponse.java",
-  "javasrc/src/main/java/com/longbridge/quote/DeleteWatchlistGroup.java",
-  "javasrc/src/main/java/com/longbridge/quote/UpdateWatchlistGroup.java",
-
-  "javasrc/src/main/java/com/longbridge/trade/AccountBalance.java",
-  "javasrc/src/main/java/com/longbridge/trade/BalanceType.java",
-  "javasrc/src/main/java/com/longbridge/trade/CashFlow.java",
-  "javasrc/src/main/java/com/longbridge/trade/CashFlowDirection.java",
-  "javasrc/src/main/java/com/longbridge/trade/CashInfo.java",
-  "javasrc/src/main/java/com/longbridge/trade/Execution.java",
-  "javasrc/src/main/java/com/longbridge/trade/FundPosition.java",
-  "javasrc/src/main/java/com/longbridge/trade/FundPositionChannel.java",
-  "javasrc/src/main/java/com/longbridge/trade/FundPositionsResponse.java",
-  "javasrc/src/main/java/com/longbridge/trade/GetCashFlowOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/GetFundPositionsOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/GetHistoryExecutionsOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/GetHistoryOrdersOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/GetStockPositionsOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/GetTodayExecutionsOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/GetTodayOrdersOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/MarginRatio.java",
-  "javasrc/src/main/java/com/longbridge/trade/Order.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderChangedHandler.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderSide.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderStatus.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderTag.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderType.java",
-  "javasrc/src/main/java/com/longbridge/trade/OutsideRTH.java",
-  "javasrc/src/main/java/com/longbridge/trade/PushOrderChanged.java",
-  "javasrc/src/main/java/com/longbridge/trade/ReplaceOrderOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/StockPosition.java",
-  "javasrc/src/main/java/com/longbridge/trade/StockPositionChannel.java",
-  "javasrc/src/main/java/com/longbridge/trade/StockPositionsResponse.java",
-  "javasrc/src/main/java/com/longbridge/trade/SubmitOrderOptions.java",
-  "javasrc/src/main/java/com/longbridge/trade/SubmitOrderResponse.java",
-  "javasrc/src/main/java/com/longbridge/trade/TimeInForceType.java",
-  "javasrc/src/main/java/com/longbridge/trade/TopicType.java",
-  "javasrc/src/main/java/com/longbridge/trade/TradeContext.java",
-  "javasrc/src/main/java/com/longbridge/trade/TriggerStatus.java",
-  "javasrc/src/main/java/com/longbridge/trade/CommissionFreeStatus.java",
-  "javasrc/src/main/java/com/longbridge/trade/DeductionStatus.java",
-  "javasrc/src/main/java/com/longbridge/trade/ChargeCategoryCode.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderHistoryDetail.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderChargeFee.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderChargeItem.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderChargeDetail.java",
-  "javasrc/src/main/java/com/longbridge/trade/OrderDetail.java",
-
+  "javasrc/src/main/java/com/longportwhale/AsyncCallback.java",
+  "javasrc/src/main/java/com/longportwhale/Config.java",
+  "javasrc/src/main/java/com/longportwhale/ConfigBuilder.java",
+  "javasrc/src/main/java/com/longportwhale/Language.java",
+  "javasrc/src/main/java/com/longportwhale/Market.java",
+  "javasrc/src/main/java/com/longportwhale/OpenApiException.java",
+  "javasrc/src/main/java/com/longportwhale/SdkNative.java",
+  "javasrc/src/main/java/com/longportwhale/AsyncCallback.java",
+  "javasrc/src/main/java/com/longportwhale/HttpClient.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderChangedHandler.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderSide.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderStatus.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderTag.java",
+  "javasrc/src/main/java/com/longportwhale/trade/OrderType.java",
+  "javasrc/src/main/java/com/longportwhale/trade/PushOrderChanged.java",
+  "javasrc/src/main/java/com/longportwhale/trade/TopicType.java",
+  "javasrc/src/main/java/com/longportwhale/trade/TradeContext.java",
+  "javasrc/src/main/java/com/longportwhale/trade/TriggerStatus.java",
   "test/Main.java",
 ]
 command = "javac"
@@ -149,7 +110,20 @@ command = "java"
 args = [
   "-Djava.library.path=target/debug",
   "-cp",
-  "java/classes;java/libs/native-lib-loader-2.4.0.jar;java/libs/slf4j-api-1.7.30.jar;java/libs/gson-2.10.1.jar",
+  "java/classes:java/libs/native-lib-loader-2.4.0.jar:java/libs/slf4j-api-1.7.30.jar:java/libs/gson-2.10.1.jar",
   "Main",
 ]
 dependencies = ["java", "compile-java-test"]
+
+[tasks.test-java_windows]
+command = "java"
+args = [
+  "-Djava.library.path=target/debug",
+  "-cp",
+  "java/classes;java/libs/native-lib-loader-2.4.0.jar;java/libs/slf4j-api-1.7.30.jar;java/libs/gson-2.10.1.jar",
+  "Main",
+]
+dependencies = ["java", "compile-java-test_windows"]
+
+
+

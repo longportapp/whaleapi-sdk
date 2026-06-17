@@ -17,9 +17,11 @@ impl Debug for PyOffsetDateTimeWrapper {
     }
 }
 
-impl<'py> FromPyObject<'py> for PyOffsetDateTimeWrapper {
-    fn extract(ob: &'py PyAny) -> PyResult<Self> {
-        let date: &PyDateTime = ob.extract()?;
+impl<'py> FromPyObject<'_, 'py> for PyOffsetDateTimeWrapper {
+    type Error = PyErr;
+
+    fn extract(obj: Borrowed<'_, 'py, PyAny>) -> Result<Self, Self::Error> {
+        let date: Bound<'_, PyDateTime> = obj.extract()?;
         let year = date.get_year();
         let month = date.get_month();
         let day = date.get_day();
@@ -44,11 +46,14 @@ impl From<OffsetDateTime> for PyOffsetDateTimeWrapper {
     }
 }
 
-impl IntoPy<PyObject> for PyOffsetDateTimeWrapper {
-    fn into_py(self, py: Python<'_>) -> PyObject {
-        PyDateTime::from_timestamp(py, self.0.unix_timestamp() as f64, None)
-            .unwrap()
-            .into_py(py)
+impl<'py> IntoPyObject<'py> for PyOffsetDateTimeWrapper {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        let dt = PyDateTime::from_timestamp(py, self.0.unix_timestamp() as f64, None)?;
+        Ok(dt.into_any())
     }
 }
 
@@ -80,17 +85,22 @@ impl From<PyDateWrapper> for Date {
     }
 }
 
-impl IntoPy<PyObject> for PyDateWrapper {
-    fn into_py(self, py: Python<'_>) -> PyObject {
-        PyDate::new(py, self.0.year(), self.0.month() as u8, self.0.day())
-            .unwrap()
-            .into_py(py)
+impl<'py> IntoPyObject<'py> for PyDateWrapper {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        let date = PyDate::new(py, self.0.year(), self.0.month() as u8, self.0.day())?;
+        Ok(date.into_any())
     }
 }
 
-impl<'py> FromPyObject<'py> for PyDateWrapper {
-    fn extract(ob: &'py PyAny) -> PyResult<Self> {
-        let date: &PyDate = ob.extract()?;
+impl<'py> FromPyObject<'_, 'py> for PyDateWrapper {
+    type Error = PyErr;
+
+    fn extract(obj: Borrowed<'_, 'py, PyAny>) -> Result<Self, Self::Error> {
+        let date: Bound<'_, PyDate> = obj.extract()?;
         let year = date.get_year();
         let month = date.get_month();
         let day = date.get_day();
@@ -122,10 +132,13 @@ impl From<Time> for PyTimeWrapper {
     }
 }
 
-impl IntoPy<PyObject> for PyTimeWrapper {
-    fn into_py(self, py: Python<'_>) -> PyObject {
-        PyTime::new(py, self.0.hour(), self.0.minute(), self.0.second(), 0, None)
-            .expect("valid time")
-            .into_py(py)
+impl<'py> IntoPyObject<'py> for PyTimeWrapper {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        let time = PyTime::new(py, self.0.hour(), self.0.minute(), self.0.second(), 0, None)?;
+        Ok(time.into_any())
     }
 }
