@@ -776,3 +776,32 @@ jobs:
       - name: Deploy Maven package
         working-directory: java/javasrc
         run: mvn deploy --activate-profiles release
+
+  publish-go-sdk:
+    needs:
+      - build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        run: echo PACKAGE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+
+      - name: Check if tag exists
+        run: |
+          if git rev-parse "go/v${PACKAGE_VERSION}" >/dev/null 2>&1; then
+            echo "TAG_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "TAG_EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create and push tag
+        if: env.TAG_EXISTS == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "go/v${PACKAGE_VERSION}"
+          git push origin "go/v${PACKAGE_VERSION}"

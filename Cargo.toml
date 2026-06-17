@@ -2,5 +2,8 @@
 resolver = "2"
 members = ["rust", "python", "nodejs", "java", "c"]
 
+[workspace.package]
+version = "1.0.0"
+
 [profile.release]
 lto = true

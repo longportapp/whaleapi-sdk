@@ -6,13 +6,13 @@
 
 | Name                        | Document                                                                  | Description                               |
 |-----------------------------|---------------------------------------------------------------------------|-------------------------------------------|
-| [Rust](rust/README.md)      | [Doc](https://longportapp.github.io/whaleapi-sdk/rust/longport/index.html) | WhaleAPI for Rust `(>= 1.56.1)`   |
+| [Rust](rust/README.md)      | [Doc](https://longportapp.github.io/whaleapi-sdk/rust/longportwhale/index.html) | WhaleAPI for Rust `(>= 1.56.1)`   |
 | [Python](python/README.md)  | [Doc](https://longportapp.github.io/whaleapi-sdk/python/index.html)        | WhaleAPI for Python 3 `(>= 3.7)`  |
 | [Node.js](nodejs/README.md) | [Doc](https://longportapp.github.io/whaleapi-sdk/nodejs/index.html)        | WhaleAPI for Node.js `(>= 10)`    |
 | [Java](java/README.md)      | [Doc](https://longportapp.github.io/whaleapi-sdk/java/index.html)          | WhaleAPI for Java `(>= 1.8)`      |
 | [C](c/README.md)            | [Doc](https://longportapp.github.io/whaleapi-sdk/c/index.html)             | WhaleAPI for C `(>= C99)`         |
 | [C++](cpp/README.md)        | [Doc](https://longportapp.github.io/whaleapi-sdk/cpp/index.html)           | WhaleAPI for C++`(>= C++17)`      |
-| Go                          |                                                                           | https://github.com/longportapp/openapi-go |
+| [Go](go/README.md)          | [Doc](https://pkg.go.dev/github.com/longportapp/whaleapi-sdk/go)           | WhaleAPI for Go `(>= 1.24)`       |
 
 ## SDK Documenation
 
