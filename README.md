@@ -6,7 +6,7 @@
 
 | Name                        | Document                                                                  | Description                               |
 |-----------------------------|---------------------------------------------------------------------------|-------------------------------------------|
-| [Rust](rust/README.md)      | [Doc](https://longportapp.github.io/whaleapi-sdk/rust/longport/index.html) | WhaleAPI for Rust `(>= 1.56.1)`   |
+| [Rust](rust/README.md)      | [Doc](https://longportapp.github.io/whaleapi-sdk/rust/longportwhale/index.html) | WhaleAPI for Rust `(>= 1.56.1)`   |
 | [Python](python/README.md)  | [Doc](https://longportapp.github.io/whaleapi-sdk/python/index.html)        | WhaleAPI for Python 3 `(>= 3.7)`  |
 | [Node.js](nodejs/README.md) | [Doc](https://longportapp.github.io/whaleapi-sdk/nodejs/index.html)        | WhaleAPI for Node.js `(>= 10)`    |
 | [Java](java/README.md)      | [Doc](https://longportapp.github.io/whaleapi-sdk/java/index.html)          | WhaleAPI for Java `(>= 1.8)`      |
