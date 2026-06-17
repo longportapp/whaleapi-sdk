@@ -12,7 +12,7 @@
 | [Java](java/README.md)      | [Doc](https://longportapp.github.io/whaleapi-sdk/java/index.html)          | WhaleAPI for Java `(>= 1.8)`      |
 | [C](c/README.md)            | [Doc](https://longportapp.github.io/whaleapi-sdk/c/index.html)             | WhaleAPI for C `(>= C99)`         |
 | [C++](cpp/README.md)        | [Doc](https://longportapp.github.io/whaleapi-sdk/cpp/index.html)           | WhaleAPI for C++`(>= C++17)`      |
-| Go                          |                                                                           | https://github.com/longportapp/openapi-go |
+| [Go](go/README.md)          | [Doc](https://pkg.go.dev/github.com/longportapp/whaleapi-sdk/go)           | WhaleAPI for Go `(>= 1.24)`       |
 
 ## SDK Documenation
 

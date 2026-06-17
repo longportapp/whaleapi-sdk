@@ -410,3 +410,40 @@ jobs:
           cargo make cmake
           cargo make c
           cargo make cpp
+
+  check-go-sdk:
+    needs:
+      - check-format
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-22.04, windows-latest, macos-13]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Check gofmt
+        working-directory: go
+        shell: bash
+        run: test -z "$(gofmt -l .)"
+
+      - name: Vet
+        working-directory: go
+        run: go vet ./...
+
+      - name: Build
+        working-directory: go
+        run: go build ./...
+
+      - name: Test
+        working-directory: go
+        run: go test ./...
+
+      - name: Build example
+        working-directory: examples/go/whale
+        run: go build ./...
