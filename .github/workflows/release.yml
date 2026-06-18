@@ -438,8 +438,8 @@ jobs:
         if: ${{ matrix.settings.host == 'windows-latest' }}
         run: |
           md dist\lib\${{ matrix.settings.platform }}\debug
-          copy cmake.build\x64\Debug\cargo\build\${{ matrix.settings.target }}\debug\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\debug
-          copy cmake.build\x64\Debug\cargo\build\${{ matrix.settings.target }}\debug\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\debug\longportwhale_c.lib
+          copy cmake.build\Debug\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\debug
+          copy cmake.build\Debug\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\debug\longportwhale_c.lib
           copy cmake.build\Debug\longportwhale_cpp.dll dist\lib\${{ matrix.settings.platform }}\debug
           copy cmake.build\cpp\Debug\longportwhale_cpp.lib dist\lib\${{ matrix.settings.platform }}\debug
 
@@ -447,7 +447,7 @@ jobs:
         if: ${{ matrix.settings.host != 'windows-latest' }}
         run: |
           mkdir -p dist/lib/${{ matrix.settings.platform }}/debug
-          cp cmake.build/cargo/build/${{ matrix.settings.target }}/debug/liblongportwhale_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
+          cp cmake.build/liblongportwhale_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
           cp cmake.build/liblongportwhale_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/debug
 
       - name: Upload artifact
@@ -518,8 +518,8 @@ jobs:
         if: ${{ matrix.settings.host == 'windows-latest' }}
         run: |
           md dist\lib\${{ matrix.settings.platform }}\release
-          copy cmake.build\x64\Release\cargo\build\${{ matrix.settings.target }}\release\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\release
-          copy cmake.build\x64\Release\cargo\build\${{ matrix.settings.target }}\release\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\release\longportwhale_c.lib
+          copy cmake.build\Release\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\release
+          copy cmake.build\Release\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\release\longportwhale_c.lib
           copy cmake.build\Release\longportwhale_cpp.dll dist\lib\${{ matrix.settings.platform }}\release
           copy cmake.build\cpp\Release\longportwhale_cpp.lib dist\lib\${{ matrix.settings.platform }}\release
 
@@ -527,7 +527,7 @@ jobs:
         if: ${{ matrix.settings.host != 'windows-latest' }}
         run: |
           mkdir -p dist/lib/${{ matrix.settings.platform }}/release
-          cp cmake.build/cargo/build/${{ matrix.settings.target }}/release/liblongportwhale_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
+          cp cmake.build/liblongportwhale_c.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
           cp cmake.build/liblongportwhale_cpp.${{ matrix.settings.dylib_ext }} dist/lib/${{ matrix.settings.platform }}/release
 
       - name: Upload artifact
