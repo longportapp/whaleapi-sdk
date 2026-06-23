@@ -439,7 +439,7 @@ jobs:
         run: |
           md dist\lib\${{ matrix.settings.platform }}\debug
           copy cmake.build\Debug\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\debug
-          copy cmake.build\Debug\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\debug\longportwhale_c.lib
+          copy cmake.build\c\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\debug\longportwhale_c.lib
           copy cmake.build\Debug\longportwhale_cpp.dll dist\lib\${{ matrix.settings.platform }}\debug
           copy cmake.build\cpp\Debug\longportwhale_cpp.lib dist\lib\${{ matrix.settings.platform }}\debug
 
@@ -519,7 +519,7 @@ jobs:
         run: |
           md dist\lib\${{ matrix.settings.platform }}\release
           copy cmake.build\Release\longportwhale_c.dll dist\lib\${{ matrix.settings.platform }}\release
-          copy cmake.build\Release\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\release\longportwhale_c.lib
+          copy cmake.build\c\longportwhale_c.dll.lib dist\lib\${{ matrix.settings.platform }}\release\longportwhale_c.lib
           copy cmake.build\Release\longportwhale_cpp.dll dist\lib\${{ matrix.settings.platform }}\release
           copy cmake.build\cpp\Release\longportwhale_cpp.lib dist\lib\${{ matrix.settings.platform }}\release
 
